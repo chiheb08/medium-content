@@ -49,9 +49,11 @@
 
 An **LLM** (Large Language Model) is a function that maps a sequence of tokens to a distribution over the **next token**:
 
-\[
+$$
 P(x_t \mid x_1, x_2, \ldots, x_{t-1})
-\]
+$$
+
+*In plain English:* the model assigns a probability to each possible next token $x_t$, conditioned on everything that came before.
 
 At inference time we **sample** or **greedily decode** that distribution to produce text. Everything you have seen — chat, summarization, code completion — is mostly **one-shot generation** inside a context window.
 
@@ -234,37 +236,45 @@ Frameworks like **LangGraph** model agents as **graphs**: nodes (steps), edges (
 
 ## Step 6 — Math you actually need (no PhD required)
 
+> **Note on formulas:** Display equations use `$$ ... $$` so they render cleanly on **GitHub**. On **Medium**, paste the *“In plain English”* line under each formula if LaTeX does not render.
+
 You do not need to derive backprop through an agent. You need to read papers and design systems.
 
 ### 6.1 Sequential decision making (MDP lite)
 
-A **Markov Decision Process (MDP)** is tuple \((S, A, P, R, \gamma)\):
+A **Markov Decision Process (MDP)** is a tuple **(S, A, P, R, γ)**:
 
-- \(S\) — states,
-- \(A\) — actions,
-- \(P(s'|s,a)\) — transition dynamics,
-- \(R(s,a)\) — reward,
-- \(\gamma\) — discount factor.
+| Symbol | Meaning |
+|--------|---------|
+| $S$ | Set of **states** the environment can be in |
+| $A$ | Set of **actions** the agent can take |
+| $P(s' \mid s, a)$ | Probability of landing in state $s'$ after taking action $a$ in state $s$ |
+| $R(s, a)$ | **Reward** received for that step |
+| $\gamma$ | **Discount factor** (how much you value future vs immediate reward), $0 \le \gamma \le 1$ |
 
-An agent seeks a **policy** \(\pi(a|s)\) maximizing expected return:
+An agent seeks a **policy** $\pi(a \mid s)$ — a rule for choosing actions in each state — that maximizes **expected return**:
 
-\[
-J(\pi) = \mathbb{E}_\pi \left[ \sum_{t=0}^{\infty} \gamma^t R(s_t, a_t) \right]
-\]
+$$
+J(\pi) = \mathbb{E}_{\pi}\left[\sum_{t=0}^{\infty} \gamma^{t}\, R(s_t, a_t)\right]
+$$
+
+*In plain English:* add up rewards over time, discounting far-future rewards, and average over the randomness induced by policy $\pi$ and the environment.
 
 **LLM agents rarely solve MDPs explicitly.** But benchmarks (games, web navigation) *are* MDPs in disguise. Reflexion and RL-style agents reuse this language: **trajectory**, **reward**, **episode**.
 
 ### 6.2 Partial observability (POMDP intuition)
 
-The agent often does not see full state — only observations (API response, page text). That is a **POMDP**. **Memory** exists partly to reconstruct hidden state.
+The agent often does not see full state — only observations (API response, page text). That is a **POMDP** (partially observable MDP). **Memory** exists partly to reconstruct hidden state from observation history.
 
 ### 6.3 Tool choice as classification
 
-Given tool set \(\{T_1, \ldots, T_k\}\), the model outputs logits \(z_i\) per tool; **softmax** gives probabilities:
+Given tools $\{T_1, T_2, \ldots, T_k\}$, the model outputs a **logit** $z_i$ per tool. **Softmax** converts logits into probabilities:
 
-\[
-p(T_i) = \frac{e^{z_i}}{\sum_j e^{z_j}}
-\]
+$$
+p(T_i) = \frac{e^{z_i}}{\sum_{j=1}^{k} e^{z_j}}
+$$
+
+*In plain English:* bigger logit → higher probability; all tool probabilities sum to 1.
 
 In practice, **JSON function calling** constrains decoding so invalid tools are less likely. Reliability comes from **schema validation**, not hope.
 
@@ -272,41 +282,49 @@ In practice, **JSON function calling** constrains decoding so invalid tools are 
 
 **Tree of Thoughts** ([Yao et al., arXiv:2305.10601](https://arxiv.org/abs/2305.10601)) evaluates multiple reasoning branches. Spiritually:
 
-\[
-\text{score}(\text{thought}) \approx \mathbb{E}[\text{success} \mid \text{following this thought}]
-\]
+$$
+\text{score}(\text{thought}) \approx \mathbb{E}\bigl[\text{success} \mid \text{follow this thought}\bigr]
+$$
 
-When exact expectation is impossible, agents **sample rollouts** (try a few continuations, pick the best). This is expensive — budget caps matter.
+*In plain English:* “If I pursue this reasoning branch, how often do I succeed on average?”
+
+When the expectation is impossible to compute exactly, agents **sample rollouts** — try a few continuations, pick the best. This is expensive; **budget caps** matter.
 
 ### 6.5 Information gain (why search helps)
 
-Good planners prefer actions that **reduce uncertainty**. RAG retrieval approximates:
+Good planners prefer actions that **reduce uncertainty**. RAG retrieval approximates choosing the action $a$ that maximizes mutual information between the answer and the next observation:
 
-\[
-a^* = \arg\max_a \; I(\text{answer}; \text{observation} \mid a)
-\]
+$$
+a^{*} = \underset{a}{\arg\max}\; I(\text{answer};\, \text{observation} \mid a)
+$$
 
-You do not compute mutual information explicitly in most apps — but **“retrieve before answering”** is the engineering approximation.
+*In plain English:* pick the action (search query, API call) that is most likely to **teach you something useful** before you commit to an answer.
+
+You rarely compute mutual information explicitly in production — but **“retrieve before answering”** is the engineering approximation.
 
 ### 6.6 Bellman equation (bridge to RL-flavored agents)
 
-In RL, the **value** of a state satisfies the Bellman recursion:
+In RL, the **value** $V(s)$ of a state — expected future return from $s$ — satisfies the **Bellman equation**:
 
-\[
-V(s) = \max_a \left[ R(s,a) + \gamma \sum_{s'} P(s'|s,a) V(s') \right]
-\]
+$$
+V(s) = \max_{a \in A}\left[ R(s,a) + \gamma \sum_{s'} P(s' \mid s,a)\, V(s') \right]
+$$
 
-LLM agents rarely compute \(V(s)\), but **Reflexion**, **RLHF**, and **reward-model critics** borrow the idea: **future success** should influence the present action.
+*In plain English:* the value of “where I am now” equals the best immediate reward plus discounted value of “where I might land next.”
+
+LLM agents rarely compute $V(s)$ numerically, but **Reflexion**, **RLHF**, and **reward-model critics** borrow the idea: **future success** should influence the present action.
 
 **Verbal Bellman (intuition):** “If I run this SQL without a `LIMIT`, the observation will be huge and I will fail — so I should add `LIMIT 100` now.” That is one-step lookahead using language instead of a value network.
 
 ### 6.7 Latency and the agent budget equation
 
-Total task latency is roughly:
+Total task latency is roughly the sum of per-step costs:
 
-\[
-T_{\text{total}} \approx \sum_{i=1}^{N_{\text{steps}}} \left( T_{\text{LLM},i} + T_{\text{tool},i} + T_{\text{queue},i} \right)
-\]
+$$
+T_{\text{total}} \approx \sum_{i=1}^{N_{\text{steps}}} \Bigl( T_{\text{LLM},i} + T_{\text{tool},i} + T_{\text{queue},i} \Bigr)
+$$
+
+*In plain English:* every loop pays for model time + tool time + queue/wait time. **Fewer steps** often beats **faster model per step**.
 
 **Implication:** shaving 200 ms off the model helps; removing **one unnecessary step** helps more. Good agent design minimizes **steps** first, then optimizes per-step speed.
 
@@ -395,7 +413,7 @@ Observation 1: ...
 
 ### Scientific context
 
-ReAct treats language as **both** cognitive workspace and **action API**. The LLM policy \(\pi\) is factored into:
+ReAct treats language as **both** cognitive workspace and **action API**. The LLM policy $\pi$ is factored into:
 
 - verbal state (thought trace),
 - discrete tool invocation (action),
@@ -486,7 +504,7 @@ Huang et al. ([arXiv:2402.02716](https://arxiv.org/abs/2402.02716)) categorize L
 
 ### 10.1 Task decomposition
 
-Break goal \(G\) into subtasks \(\{g_1, g_2, \ldots\}\).
+Break goal $G$ into subtasks $\{g_1, g_2, \ldots, g_n\}$.
 
 Classic pattern (BabyAGI / task queues):
 
@@ -500,7 +518,7 @@ Classic pattern (BabyAGI / task queues):
 
 ### 10.2 Multi-plan selection
 
-Generate \(N\) plans, score, execute best. **Tree of Thoughts** and **LATS** ([Zhou et al.](https://arxiv.org/abs/2310.04406)) use search / MCTS-style exploration.
+Generate $N$ candidate plans, score them, execute the best. **Tree of Thoughts** and **LATS** ([Zhou et al.](https://arxiv.org/abs/2310.04406)) use search / MCTS-style exploration.
 
 ### 10.3 External module-aided planning
 
@@ -514,13 +532,15 @@ See Step 12 — plan, act, **critique**, replan.
 
 Retrieve similar past episodes: “last deploy we fixed latency by enabling HTTP/2.” **ExpeL** ([Zhao et al.](https://arxiv.org/abs/2308.10144)) extracts lessons into memory.
 
-### Planning in one equation (informal)
+### Planning objective (informal)
 
-\[
-\pi^* = \arg\max_\pi \; \mathbb{E}[\text{success}(G) \mid \pi, \text{memory}]
-\]
+$$
+\pi^{*} = \underset{\pi}{\arg\max}\; \mathbb{E}\bigl[\text{success}(G) \mid \pi,\, \text{memory}\bigr]
+$$
 
-Engineering approximates \(\pi^*\) with **heuristics + LLM guesses**.
+*In plain English:* choose the policy (planning strategy) that maximizes the chance of completing goal $G$, given what you remember.
+
+Engineering approximates $\pi^{*}$ with **heuristics + LLM guesses**.
 
 ---
 
@@ -551,11 +571,13 @@ This is the blueprint for **believable long-horizon** behavior (and also for **s
 
 ### 11.4 Vector RAG
 
-Store chunks with embeddings \(\mathbf{e}_i\); query \(\mathbf{q}\); retrieve top-\(k\) by cosine similarity:
+Store chunks with embedding vectors $\mathbf{e}_i$; embed the query as $\mathbf{q}$; retrieve **top-k** by **cosine similarity**:
 
-\[
-\text{sim}(\mathbf{q}, \mathbf{e}_i) = \frac{\mathbf{q} \cdot \mathbf{e}_i}{\|\mathbf{q}\| \|\mathbf{e}_i\|}
-\]
+$$
+\text{sim}(\mathbf{q}, \mathbf{e}_i) = \frac{\mathbf{q} \cdot \mathbf{e}_i}{\lVert \mathbf{q} \rVert \, \lVert \mathbf{e}_i \rVert}
+$$
+
+*In plain English:* measure the angle between query and chunk vectors — closer direction → more similar meaning (assuming normalized embeddings).
 
 **Agent twist:** retrieval is not upfront — it is **one action among many**, possibly repeated as the task evolves.
 
@@ -572,17 +594,22 @@ Store chunks with embeddings \(\mathbf{e}_i\); query \(\mathbf{q}\); retrieve to
 
 ### 11.6 Generative Agents: retrieval scoring (scientific detail)
 
-Park et al. score a memory \(m\) at time \(t\) with a blend of **recency**, **importance**, and **relevance**:
+Park et al. score memory $m$ at time $t$ as a weighted blend of **recency**, **importance**, and **relevance**:
 
-\[
-\text{score}(m) = \alpha_{\text{rec}} \cdot \text{recency}(m) + \alpha_{\text{imp}} \cdot \text{importance}(m) + \alpha_{\text{rel}} \cdot \text{relevance}(m, \text{query})
-\]
+$$
+\text{score}(m) = \alpha_{\text{rec}} \cdot \text{recency}(m) + \alpha_{\text{imp}} \cdot \text{importance}(m) + \alpha_{\text{rel}} \cdot \text{relevance}(m,\, q_t)
+$$
 
-- **Recency** — exponential decay so fresh events dominate short-term behavior.
-- **Importance** — LLM rates how “memorable” an event is (death of a character > breakfast).
-- **Relevance** — embedding similarity to the current planning query.
+| Term | Role |
+|------|------|
+| $\text{recency}(m)$ | Favors fresh memories (often exponential decay) |
+| $\text{importance}(m)$ | LLM-rated salience (“major incident” > “routine ping”) |
+| $\text{relevance}(m, q_t)$ | Embedding similarity to current planning query $q_t$ |
+| $\alpha_{\text{rec}}, \alpha_{\text{imp}}, \alpha_{\text{rel}}$ | Non-negative weights (sum to 1 in some implementations) |
 
-**Engineering takeaway:** do not retrieve “top‑k by embedding” alone for long-horizon agents. Combine **time decay** + **importance metadata** or agents drown in irrelevant old facts.
+*In plain English:* retrieve memories that are **recent**, **memorable**, and **on-topic** — not just closest in embedding space.
+
+**Engineering takeaway:** do not retrieve “top-k by embedding” alone for long-horizon agents. Combine **time decay** + **importance metadata** or agents drown in irrelevant old facts.
 
 ### 11.7 Forgetting is a feature
 
@@ -650,11 +677,13 @@ This is **organizational memory** implemented in software.
 
 ### SayCan and embodied grounding (robots meet LLMs)
 
-**SayCan** ([Ahn et al., 2022](https://arxiv.org/abs/2204.01691)) couples LLM **high-level plans** with affordance models that score **which low-level skills are physically possible now**. Pattern:
+**SayCan** ([Ahn et al., 2022](https://arxiv.org/abs/2204.01691)) couples LLM **high-level plans** with affordance models that score **which low-level skills are physically possible now**. The combined policy is proportional to both language preference and physical feasibility:
 
-\[
-\pi(a|s) \propto p_{\text{LLM}}(a|s) \cdot p_{\text{affordance}}(a|s)
-\]
+$$
+\pi(a \mid s) \;\propto\; p_{\text{LLM}}(a \mid s) \cdot p_{\text{affordance}}(a \mid s)
+$$
+
+*In plain English:* an action must be **what the LLM wants** and **what the system can actually do right now**.
 
 Translation for software agents: combine **language intent** with a **permission / capability matrix** so the model cannot call `delete_database` just because it sounds confident.
 
@@ -688,7 +717,7 @@ Translation for software agents: combine **language intent** with a **permission
 
 - **Infinite politeness loops** — agents agree forever.
 - **Telephone game** — errors amplify across hops.
-- **Cost explosion** — \(N\) agents × \(M\) steps × token price.
+- **Cost explosion** — $N$ agents × $M$ steps × token price.
 - **Unclear ownership** — nobody accountable for final action.
 
 **Mitigation:** supervisor with **hard stop**, structured message schemas (not free-form chat), **single writer** to production systems.
@@ -809,7 +838,7 @@ Agents are judged on **tasks**, not vibes.
 ### Metrics you will see
 
 - **Success rate** — task completed correctly.
-- **pass@k** — success in \(k\) attempts (important with Reflexion).
+- **pass@k** — success within $k$ attempts (important with Reflexion).
 - **Steps to success** — efficiency.
 - **Cost** — dollars / tokens (often omitted in papers, critical in prod).
 - **Safety** — harmful actions prevented.
@@ -818,9 +847,11 @@ Agents are judged on **tasks**, not vibes.
 
 Report both **capability** and **cost**:
 
-\[
+$$
 \text{efficiency} = \frac{\text{success rate}}{\text{avg tokens} \times \text{price per token}}
-\]
+$$
+
+*In plain English:* success alone is not enough — a brilliant agent that burns a million tokens per task is a bad production agent.
 
 A weaker model with tight tools sometimes **beats** a genius model in a loop.
 
@@ -935,7 +966,7 @@ python minimal_react_agent.py
 | Code piece | Agent concept |
 |------------|---------------|
 | `messages[]` | Working memory |
-| `mock_llm()` | Policy \(\pi\) — replace with API call |
+| `mock_llm()` | Policy $\pi$ — replace with API call |
 | `TOOLS` dict | Action space |
 | `ACTION_RE` parser | Tool router output handling |
 | `max_steps` | Budget |
