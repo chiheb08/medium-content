@@ -7,3 +7,4 @@ This repository is for my Medium blogs — here I share the content I publish on
 - **ai-knowledge/** — Articles on AI topics (agents, LLMs, and related concepts).
   - `ai-agents-easy-guide.md` — **Start here:** plain-language guide with real-life analogies.
   - `ai-agents-complete-guide.md` — Deep dive with research papers, math, and production detail.
+- **junior-to-senior-metrics/** — How engineering thinking and metrics shift from junior to senior (SLA, DORA, ROI, security).
