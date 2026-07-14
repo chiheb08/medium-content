@@ -12,7 +12,6 @@
 > **Medium tip:** Paste section headings as **H2** blocks. For tables, use `streaming-error-budgets-slo-performance-medium-no-tables.md` or screenshot from the full article.
 
 ---
-
 > **Medium paste version:** Empty slots for tables. Screenshot from full `.md` file.
 
 
@@ -29,7 +28,9 @@
 
 **Stacks referenced:** Kafka-style logs, Spark Structured Streaming, Flink — patterns apply to Kinesis, Pulsar, Redpanda, and managed stream processors too.
 
-> **New to the jargon?** Read **[Terms defined — streaming dictionary](#terms-defined--streaming-dictionary)** first. For SLO, error budget, MTTR, DORA, see [Part 1](https://github.com/chiheb08/medium-content/blob/main/junior-to-senior-metrics/junior-to-senior-thinking-metrics.md#terms-defined--the-dictionary-read-this-first). For batch pipelines, see [Part 2’s dictionary](https://github.com/chiheb08/medium-content/blob/main/junior-to-senior-metrics/data-pipelines-error-budgets-dora-performance.md#terms-defined--data-pipeline-dictionary).
+> **How this article reads:** **📋 Work story** boxes are short office scenes — fraud alerts, sale-day lag, duplicate charges — told simply.
+
+> **New to the jargon?** Read **[Terms defined — streaming dictionary](#terms-defined--streaming-dictionary)** first.
 
 ---
 
@@ -42,7 +43,7 @@
 ### Core streaming concepts
 
 
-> **📷 Insert table screenshot here (Table 1)**  
+> **📷 Insert table screenshot here (Table 1)**
 > *Core streaming concepts*
 
 <!-- Empty slot -->
@@ -51,7 +52,7 @@
 ### Time and correctness
 
 
-> **📷 Insert table screenshot here (Table 2)**  
+> **📷 Insert table screenshot here (Table 2)**
 > *Time and correctness*
 
 <!-- Empty slot -->
@@ -60,7 +61,7 @@
 ### Delivery and failure words
 
 
-> **📷 Insert table screenshot here (Table 3)**  
+> **📷 Insert table screenshot here (Table 3)**
 > *Delivery and failure words*
 
 <!-- Empty slot -->
@@ -69,7 +70,7 @@
 ### Schema and deploy
 
 
-> **📷 Insert table screenshot here (Table 4)**  
+> **📷 Insert table screenshot here (Table 4)**
 > *Schema and deploy*
 
 <!-- Empty slot -->
@@ -78,7 +79,7 @@
 ### Metrics reminders (Part 1 & 2)
 
 
-> **📷 Insert table screenshot here (Table 5)**  
+> **📷 Insert table screenshot here (Table 5)**
 > *Metrics reminders (Part 1 & 2)*
 
 <!-- Empty slot -->
@@ -127,13 +128,19 @@
 
 **Real-life analogy:** A **live TV broadcast** (streaming) vs **next-day replay** (batch). The director cares if viewers see the goal **now** — and that the score graphic is **not wrong** because a delayed packet duplicated a point.
 
+### 📋 Work story (simple) — the green Flink UI
+
+**10:00** — You open the Flink dashboard: **RUNNING**, lag **low**.  
+**10:15** — Fraud team in Slack: “Why did we approve **obvious** bad transactions?”  
+**Root cause:** duplicate events from retries + join without `event_id` dedup. **Lag looked fine.**
+
+**Senior lesson:** Streaming health is **trust**, not **job color**.
+
 ---
 
-## Batch vs streaming promises — different scoreboards
 
-
-> **📷 Insert table screenshot here (Table 6)**  
-> *Batch vs streaming promises — different scoreboards*
+> **📷 Insert table screenshot here (Table 6)**
+> *Table*
 
 <!-- Empty slot -->
 
@@ -147,7 +154,7 @@
 Pick **one primary SLI per consumer-facing stream** — not twelve graphs nobody owns.
 
 
-> **📷 Insert table screenshot here (Table 7)**  
+> **📷 Insert table screenshot here (Table 7)**
 > *The streaming SLI menu — what to measure*
 
 <!-- Empty slot -->
@@ -155,9 +162,16 @@ Pick **one primary SLI per consumer-facing stream** — not twelve graphs nobody
 
 **Pitfall:** Optimizing **average** lag while **p99** kills fraud detection or inventory.
 
----
+### 📋 Work story (simple) — average lag lied
 
-## Consumer lag — the metric everyone cites (and misreads)
+**Average lag:** 2 seconds — sounds great.  
+**p99 lag:** 4 minutes — fraud rules see **stale** balances for the worst 1% of transactions.
+
+**Who cares about p99?** The **1%** might be **high-value** or **attack** traffic.
+
+**Everyday analogy:** “Average commute 20 minutes” does not help if you are **late to the job interview** every Friday.
+
+---
 
 **Consumer lag** = how far a consumer group is behind the **end of the log** (Kafka: `records-lag-max`; Flink: source lag + checkpoint health).
 
@@ -173,7 +187,7 @@ Pick **one primary SLI per consumer-facing stream** — not twelve graphs nobody
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 8)**  
+> **📷 Insert table screenshot here (Table 8)**
 > *Junior → senior shift*
 
 <!-- Empty slot -->
@@ -220,7 +234,7 @@ A Flink job can run at 40% CPU while latency drifts because:
 ### SLO framing
 
 
-> **📷 Insert table screenshot here (Table 9)**  
+> **📷 Insert table screenshot here (Table 9)**
 > *SLO framing*
 
 <!-- Empty slot -->
@@ -228,14 +242,23 @@ A Flink job can run at 40% CPU while latency drifts because:
 
 **Senior question:** “Latency SLO for **whom** — and what happens when we miss: block, degrade, or alert only?”
 
----
+### 📋 Work story (simple) — fraud vs dashboard
 
-## Event time, processing time, and watermarks
+
+> **📷 Insert table screenshot here (Table 10)**
+> *📋 Work story (simple) — fraud vs dashboard*
+
+<!-- Empty slot -->
+
+
+One streaming job often feeds **all three** — you cannot optimize one number for everyone without **saying the trade-off out loud**.
+
+---
 
 ### Two clocks
 
 
-> **📷 Insert table screenshot here (Table 10)**  
+> **📷 Insert table screenshot here (Table 11)**
 > *Two clocks*
 
 <!-- Empty slot -->
@@ -256,7 +279,7 @@ Used to **close windows** and emit aggregates.
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 11)**  
+> **📷 Insert table screenshot here (Table 12)**
 > *Junior → senior shift*
 
 <!-- Empty slot -->
@@ -268,15 +291,21 @@ Explicit rule: “Accept updates up to **10 minutes** late; after that, side out
 
 **Senior move:** Metric **dropped / late records** on the dashboard — not only lag.
 
----
+### 📋 Work story (simple) — phone offline, event late
 
-## Completeness and correctness under delay
+A customer buys coffee **08:00** (event time). Phone was offline; event arrives **08:45** (processing time).  
+If you use **processing time** only, morning sales look **low** until 08:45.  
+If you use **event time** + **allowed lateness**, morning report **corrects itself**.
+
+**Real-life analogy:** You text “happy birthday” at midnight but it **delivers at 8 a.m.** — the wish was for **yesterday**, not breakfast.
+
+---
 
 Streaming systems often choose **approximate now** vs **correct later**.
 
 
-> **📷 Insert table screenshot here (Table 12)**  
-> *Completeness and correctness under delay*
+> **📷 Insert table screenshot here (Table 13)**
+> *Table*
 
 <!-- Empty slot -->
 
@@ -291,15 +320,20 @@ Streaming systems often choose **approximate now** vs **correct later**.
 
 That is honesty — not weakness.
 
----
+### 📋 Work story (simple) — election night for your CEO
 
-## Delivery semantics — what you can actually promise
+CEO asks in the all-hands: “What’s revenue **right now**?”  
+**Senior answer:** “Stream says **~$4.2M**, directional — **official** number is batch at **6 p.m.** after reconciliation.”
+
+**Junior mistake:** quote stream as **gospel**, get corrected in front of **500 people**.
+
+---
 
 Marketing loves **exactly-once**. Seniors translate:
 
 
-> **📷 Insert table screenshot here (Table 13)**  
-> *Delivery semantics — what you can actually promise*
+> **📷 Insert table screenshot here (Table 14)**
+> *Table*
 
 <!-- Empty slot -->
 
@@ -319,11 +353,20 @@ Marketing loves **exactly-once**. Seniors translate:
 - **Side effects** outside DB (email, webhook) — often **at-least-once** forever
 
 
-> **📷 Insert table screenshot here (Table 14)**  
+> **📷 Insert table screenshot here (Table 15)**
 > *What to document*
 
 <!-- Empty slot -->
 
+
+### 📋 Work story (simple) — charged twice
+
+Payment event retries during a network blip. Without **`payment_id`** as idempotency key, the warehouse records **two** charges.  
+Support sees angry customers. Lag was **fine**.
+
+**Fix:** upsert by `payment_id` + nightly **duplicate count** alert.
+
+**Everyday analogy:** Getting **two** receipt emails for one coffee because the card reader timed out.
 
 ---
 
@@ -339,7 +382,7 @@ Batch budgets often count **missed days**. Streaming budgets count **bad minutes
 ### What burns streaming budget
 
 
-> **📷 Insert table screenshot here (Table 15)**  
+> **📷 Insert table screenshot here (Table 16)**
 > *What burns streaming budget*
 
 <!-- Empty slot -->
@@ -348,7 +391,7 @@ Batch budgets often count **missed days**. Streaming budgets count **bad minutes
 ### Green / yellow / red (streaming)
 
 
-> **📷 Insert table screenshot here (Table 16)**  
+> **📷 Insert table screenshot here (Table 17)**
 > *Green / yellow / red (streaming)*
 
 <!-- Empty slot -->
@@ -356,15 +399,21 @@ Batch budgets often count **missed days**. Streaming budgets count **bad minutes
 
 **Real-life analogy:** **Air traffic** — minor delays OK within buffer; **runway closure** stops departures.
 
----
+### 📋 Work story (simple) — 26 minutes for the month
 
-## DORA when deploy means savepoint
+Sale day: lag spikes **8 minutes**. Team logs it as **planned** (communicated in advance).  
+Later: bad deploy burns **15 minutes** unplanned.  
+**Budget left:** ~3 minutes — **freeze** risky schema changes until next month.
+
+**Everyday analogy:** Your phone plan has **2 GB** left. One long video call is fine; **five** 4K streams and you pay overage.
+
+---
 
 Map DORA to streaming releases:
 
 
-> **📷 Insert table screenshot here (Table 17)**  
-> *DORA when deploy means savepoint*
+> **📷 Insert table screenshot here (Table 18)**
+> *Table*
 
 <!-- Empty slot -->
 
@@ -377,15 +426,20 @@ Map DORA to streaming releases:
 - **Compatible** schema changes (Avro/Protobuf rules)
 
 
-> **📷 Insert table screenshot here (Table 18)**  
+> **📷 Insert table screenshot here (Table 19)**
 > *Safer streaming deploy patterns*
 
 <!-- Empty slot -->
 
 
----
+### 📋 Work story (simple) — savepoint or panic
 
-## MTTR and MTBF in stream land
+**Junior deploy:** stop Flink job, change code, start fresh — **state gone**, lag **hours**, finance **wrong**.  
+**Senior deploy:** **savepoint**, drain, deploy, validate lag + row counts, **then** close change ticket.
+
+**Everyday analogy:** Saving your **video game** before a boss fight vs starting the whole level over.
+
+---
 
 ### MTTR — restore trust, not only green status
 
@@ -401,7 +455,7 @@ Clock starts when **consumers** or **SLOs** hurt — not when you noticed a yell
 6. **Notify** downstream “do not automate trades on stream X”  
 
 
-> **📷 Insert table screenshot here (Table 19)**  
+> **📷 Insert table screenshot here (Table 20)**
 > *Table*
 
 <!-- Empty slot -->
@@ -438,13 +492,22 @@ One partition carries 40% of keys → one task holds the whole pipeline hostage.
 
 **Mitigations:** key salting, custom partitioner, **separate** hot path.
 
-### Utilization (Part 1 callback)
+### 📋 Work story (simple) — sale day hot key
+
+Black Friday: **90%** of events share `product_id = DEAL_OF_DAY`.  
+One Kafka partition, one Flink subtask, **lag explodes** while cluster CPU looks **fine overall**.
+
+**Senior fix:** salt hot keys, or **side-channel** hot deals to a dedicated pipeline.
+
+**Everyday analogy:** One **checkout lane** open for the whole store — the other nine lanes do not help.
+
+---
 
 100% CPU on stream workers = **no burst headroom**. Seniors leave room for **replay** and **sale day**.
 
 
-> **📷 Insert table screenshot here (Table 20)**  
-> *Utilization (Part 1 callback)*
+> **📷 Insert table screenshot here (Table 21)**
+> *Table*
 
 <!-- Empty slot -->
 
@@ -462,8 +525,8 @@ Breaking change without plan = **CFR event**:
 - downstream SQL **silent** nulls.
 
 
-> **📷 Insert table screenshot here (Table 21)**  
-> *Schema change and compatibility — silent CFR multipliers*
+> **📷 Insert table screenshot here (Table 22)**
+> *Table*
 
 <!-- Empty slot -->
 
@@ -472,29 +535,48 @@ Breaking change without plan = **CFR event**:
 
 **Data contracts (teaser):** upstream commits to field presence, semantics, and **SLA to log** — Part 4 topic if you want it.
 
----
+### 📋 Work story (simple) — column vanished
 
-## The senior streaming dashboard
+Producer removes `currency` field “because nobody uses it.”  
+Warehouse SQL fills **NULL** → revenue shown in **wrong currency**.  
+Lag: green. Tests: **missed** because nobody owned the contract.
+
+**Everyday analogy:** Restaurant removes **salt** from the recipe without telling the chef — dish still **looks** fine, tastes **wrong**.
+
+---
 
 One page. Answers: **“Can we trust live data right now?”**
 
 
-> **📷 Insert table screenshot here (Table 22)**  
-> *The senior streaming dashboard*
+> **📷 Insert table screenshot here (Table 23)**
+> *Table*
 
 <!-- Empty slot -->
 
 
 **Real-life analogy:** Pilot’s **six-pack** — airspeed alone does not land the plane.
 
+### 📋 Work story (simple) — green lag, wrong fraud score
+
+Fraud dashboard: **lag 2s** — looks perfect.  
+Reconciliation: **0.3%** duplicate events → **false fraud blocks**.  
+Senior dashboard adds **duplicate rate** next to lag.
+
+**Everyday analogy:** Speedometer says **60 mph** but the **fuel gauge** is empty — one gauge is not enough.
+
 ---
 
-## Performance reviews for streaming engineers
+### 📋 Work story (simple)
+
+**Weak review line:** “Kept Kafka consumers running.”  
+**Strong review line:** “Sale-day **p99 lag** stayed under **60s** (SLO 99.9%); reduced duplicate charge rate **3×** via idempotent sink.”
+
+Your manager may not know what Kafka is. They understand **money not stolen** and **SLO charts**.
 
 ### Weak vs strong bullets
 
 
-> **📷 Insert table screenshot here (Table 23)**  
+> **📷 Insert table screenshot here (Table 24)**
 > *Weak vs strong bullets*
 
 <!-- Empty slot -->
@@ -516,7 +598,7 @@ One page. Answers: **“Can we trust live data right now?”**
 ## Quarter plan — streaming edition
 
 
-> **📷 Insert table screenshot here (Table 24)**  
+> **📷 Insert table screenshot here (Table 25)**
 > *Quarter plan — streaming edition*
 
 <!-- Empty slot -->
@@ -530,9 +612,14 @@ One page. Answers: **“Can we trust live data right now?”**
 4. Any **partition skew** alert?  
 5. One downstream **“does this number look right?”** check  
 
----
+### 📋 Work story (simple) — ask finance once a week
 
-## Conclusion — the senior streaming sentence
+Every Thursday, ping **one** downstream owner: “Does live revenue match your spreadsheet?”  
+Caught **twice** that streaming duplicates inflated totals — lag chart was **green both times**.
+
+**Everyday analogy:** Asking “does this **look right**?” before signing a contract — five minutes, saves a lawsuit.
+
+---
 
 **Part 1** taught the scoreboard change. **Part 2** applied it to **batch pipelines**. **Part 3** is the always-on case:
 

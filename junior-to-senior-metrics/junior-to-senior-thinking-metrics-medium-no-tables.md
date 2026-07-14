@@ -10,7 +10,6 @@
 > **Medium tip:** Paste section headings as **H2** blocks. Medium does not reliably support Markdown anchor links in a table of contents — use the **“At a glance”** list below as your scroll map.
 
 ---
-
 > **Medium paste version:** Empty slots for tables. Screenshot from full `.md` file.
 
 
@@ -25,7 +24,9 @@
 
 **One line to remember:** Juniors optimize **tasks**. Seniors optimize **systems, outcomes, and risk over time**.
 
-> **New to the jargon?** Skip to **[Terms defined — the dictionary](#terms-defined--the-dictionary-read-this-first)** before the deep sections. Every acronym and fuzzy phrase used in this series gets a plain-English line there.
+> **New to the jargon?** Skip to **[Terms defined — the dictionary](#terms-defined--the-dictionary-read-this-first)** before the deep sections.
+
+> **How this article reads:** Sections marked **📋 Work story** are short, real-office scenes — Slack messages, deploys, finance asking questions — explained like you'd tell a colleague at lunch.
 
 ---
 
@@ -36,7 +37,7 @@ Read this section once if you are **not** an SRE, or if meetings feel like acron
 ### Work and delivery (everyday engineering)
 
 
-> **📷 Insert table screenshot here (Table 1)**  
+> **📷 Insert table screenshot here (Table 1)**
 > *Work and delivery (everyday engineering)*
 
 <!-- Empty slot -->
@@ -45,7 +46,7 @@ Read this section once if you are **not** an SRE, or if meetings feel like acron
 ### Reliability promises (SLA family)
 
 
-> **📷 Insert table screenshot here (Table 2)**  
+> **📷 Insert table screenshot here (Table 2)**
 > *Reliability promises (SLA family)*
 
 <!-- Empty slot -->
@@ -54,7 +55,7 @@ Read this section once if you are **not** an SRE, or if meetings feel like acron
 ### Recovery and stability over time
 
 
-> **📷 Insert table screenshot here (Table 3)**  
+> **📷 Insert table screenshot here (Table 3)**
 > *Recovery and stability over time*
 
 <!-- Empty slot -->
@@ -63,7 +64,7 @@ Read this section once if you are **not** an SRE, or if meetings feel like acron
 ### Software delivery (DORA)
 
 
-> **📷 Insert table screenshot here (Table 4)**  
+> **📷 Insert table screenshot here (Table 4)**
 > *Software delivery (DORA)*
 
 <!-- Empty slot -->
@@ -72,7 +73,7 @@ Read this section once if you are **not** an SRE, or if meetings feel like acron
 ### Business and planning
 
 
-> **📷 Insert table screenshot here (Table 5)**  
+> **📷 Insert table screenshot here (Table 5)**
 > *Business and planning*
 
 <!-- Empty slot -->
@@ -81,7 +82,7 @@ Read this section once if you are **not** an SRE, or if meetings feel like acron
 ### Security and risk
 
 
-> **📷 Insert table screenshot here (Table 6)**  
+> **📷 Insert table screenshot here (Table 6)**
 > *Security and risk*
 
 <!-- Empty slot -->
@@ -94,7 +95,6 @@ Read this section once if you are **not** an SRE, or if meetings feel like acron
 ## Table of contents
 
 1. [Terms defined — the dictionary](#terms-defined--the-dictionary-read-this-first)
-2. [The promotion nobody announces: your scoreboard changes](#the-promotion-nobody-announces-your-scoreboard-changes)
 2. [The promotion nobody announces: your scoreboard changes](#the-promotion-nobody-announces-your-scoreboard-changes)
 3. [Junior thinking vs senior thinking — the big picture](#junior-thinking-vs-senior-thinking--the-big-picture)
 4. [System stability & reliability — when “it works on my machine” stops being enough](#system-stability--reliability--when-it-works-on-my-machine-stops-being-enough)
@@ -137,14 +137,25 @@ Somewhere between “junior” and “senior,” you are expected to care about 
 
 This article is a map of that shift — through the metrics that start showing up in dashboards, incident reviews, and leadership slides. Not so you can memorize acronyms, but so you can **think like the job is bigger than your branch**.
 
+### 📋 Work story (simple)
+
+**Monday, 9:04 a.m.** Your manager asks in Slack: “Did you ship the login fix?”  
+You say **yes** — the PR merged Friday.  
+At **2:30 p.m.**, support reports users still cannot log in on mobile. The fix is in `main`, but **not in production** yet. Nobody tracked **deploy**.
+
+**Junior scorecard:** ticket closed ✅  
+**Senior scorecard:** users still broken ❌
+
 **Real-life analogy:** A junior cook is judged on **plating one dish**. A head chef is judged on **whether the kitchen stays open all night** — food quality, speed, wasted ingredients, and whether someone gets hospitalized from bad oysters.
+
+**Another one from the office:** Finishing your slide deck is not the same as **delivering the presentation**. Shipping code is not the same as **customers being OK**.
 
 ---
 
 ## Junior thinking vs senior thinking — the big picture
 
 
-> **📷 Insert table screenshot here (Table 7)**  
+> **📷 Insert table screenshot here (Table 7)**
 > *Junior thinking vs senior thinking — the big picture*
 
 <!-- Empty slot -->
@@ -152,7 +163,16 @@ This article is a map of that shift — through the metrics that start showing u
 
 None of this means juniors are “wrong.” It means **the job’s definition of good expands**. The metrics below are how organizations make that expansion visible.
 
----
+### 📋 Work story (simple)
+
+
+> **📷 Insert table screenshot here (Table 8)**
+> *📋 Work story (simple)*
+
+<!-- Empty slot -->
+
+
+**Real-life analogy:** Learning to drive: at first you celebrate **not stalling**. Later you care about **not killing the transmission**, **fuel cost**, and **whether passengers arrive alive**.
 
 ## System stability & reliability — when “it works on my machine” stops being enough
 
@@ -163,6 +183,14 @@ None of this means juniors are “wrong.” It means **the job’s definition of
 Reliability metrics are not about fear. They are about **honest promises** — to users, to sales, to finance, and to the on-call engineer who inherits your design at 3 a.m.
 
 **Bridge:** Before SLAs and SLOs, remember — **stability is a feature** with compound interest. Every silent failure you ignore becomes someone else’s emergency later.
+
+### 📋 Work story (simple)
+
+Your API returns **200 OK** in tests. On launch day, the database connection pool is sized for **10 users**, and marketing sends **10,000**.
+
+**“It works on my machine”** is true. **“It works for the business”** is false.
+
+**Real-life analogy:** A door lock works when **you** try it once. Senior thinking asks: does it still work when **everyone leaves at 5 p.m. at once**?
 
 ---
 
@@ -182,6 +210,8 @@ An **SLA** usually includes:
 
 **Real-life analogy:** A pizza shop promises **“30 minutes or it’s free.”** That is an SLA — customer-facing, with teeth.
 
+**Work example:** Your company sells B2B software. The contract says **“99.9% uptime or credit.”** Sales signed it. Engineering now lives inside that box — that is the **SLA**.
+
 ### SLO — Service Level Objective
 
 **Defined:** An **internal target** your team sets — stricter than the SLA — so you have buffer before customers feel pain.
@@ -195,10 +225,12 @@ An **SLO** should be **stricter** than the SLA — a buffer zone.
 
 **Real-life analogy:** You tell your friend you’ll arrive by **6:00** (SLO) so you can still be on time for the **6:30** movie (SLA).
 
+**Work example:** Engineering targets **99.95%** internally. Legal promises customers **99.9%**. The **0.05% gap** is your safety buffer — not “slackers being picky.”
+
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 8)**  
+> **📷 Insert table screenshot here (Table 9)**
 > *Junior → senior shift*
 
 <!-- Empty slot -->
@@ -215,9 +247,15 @@ If your SLO is 99.9% monthly, you have a small **error budget** — allowed unre
 
 **Pitfall:** Publishing an SLA without an SLO is like signing a lease without checking your bank balance.
 
----
+### 📋 Work story (simple) — error budget in one meeting
 
-## Error rates — the signal, not the shame number
+Product wants a **big risky launch** the week before Black Friday.  
+**Junior:** “Sure, we can squeeze it in.”  
+**Senior:** “Our **error budget** is already 30% burned from last week’s deploy. If this launch fails, we miss **SLA** during peak sales. I recommend **January** or a **canary** with rollback ready.”
+
+Same skills. Different **risk vocabulary**.
+
+---
 
 **Error rate** = how often requests, jobs, or transactions fail — usually as a **percentage** over a window.
 
@@ -230,7 +268,7 @@ Examples:
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 9)**  
+> **📷 Insert table screenshot here (Table 10)**
 > *Junior → senior shift*
 
 <!-- Empty slot -->
@@ -238,7 +276,14 @@ Examples:
 
 **Real-life analogy:** A hospital tracks **complication rates** — not to shame surgeons, but to find **systemic** issues (scheduling, handoffs, equipment). A single bad day matters less than a **pattern**.
 
-### Practical habits seniors build
+### 📋 Work story (simple)
+
+Your dashboard shows **0.1% error rate**. Sounds tiny.  
+But that **0.1%** might be **only paying enterprise customers** hitting a broken checkout — because errors are grouped wrong.
+
+**Senior question:** “Errors for **whom** and on **which** path?” — not “how do we hit zero?”
+
+**Everyday analogy:** One wrong answer on a **100-question quiz** is 1%. One wrong ingredient in a **peanut allergy** kitchen is not “only 1%.”
 
 - Split **client errors (4xx)** vs **server errors (5xx)** — different owners, different fixes.
 - Track **error budget burn rate** after deploys.
@@ -257,7 +302,7 @@ Note: DORA also uses **MTTR** for *failed changes* — how fast you restore afte
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 10)**  
+> **📷 Insert table screenshot here (Table 11)**
 > *Junior → senior shift*
 
 <!-- Empty slot -->
@@ -265,7 +310,15 @@ Note: DORA also uses **MTTR** for *failed changes* — how fast you restore afte
 
 **Real-life analogy:** Fire drills are not about pretending fires never happen. They are about **everyone knowing where the extinguishers are**.
 
-### What actually lowers MTTR
+### 📋 Work story (simple) — the 2 a.m. deploy
+
+**2:14 a.m.** — pager fires. Bad deploy. Checkout broken.  
+**Junior path:** debug in prod for 90 minutes, hero fix, tired postmortem.  
+**Senior path:** **rollback in 4 minutes**, checkout works, debug calmly at 10 a.m.
+
+**MTTR:** 4 minutes vs 90 minutes. Same bug. Different **playbook**.
+
+**Office analogy:** When the presentation crashes, you do not rebuild PowerPoint live on stage — you switch to the **backup PDF** (rollback), then fix the deck tomorrow.
 
 - **Runbooks** that match real failures (not fantasy docs)
 - **Feature flags** and **canaries**
@@ -287,7 +340,7 @@ Low MTBF → you are living in **chronic pain** — even if each fix is fast.
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 11)**  
+> **📷 Insert table screenshot here (Table 12)**
 > *Junior → senior shift*
 
 <!-- Empty slot -->
@@ -295,11 +348,18 @@ Low MTBF → you are living in **chronic pain** — even if each fix is fast.
 
 **Real-life analogy:** Your car **starts** every morning (good MTTR when it rarely breaks) vs it **breaks down every month** (bad MTBF — you live at the mechanic).
 
-### MTTR vs MTBF — use both
+### 📋 Work story (simple)
+
+Every **Monday**, the same report job fails because the vendor file arrives in a **new format**. You fix it by hand. **MTTR** looks great — you are fast!  
+**MTBF** looks terrible — the same fire **every week**.
+
+**Senior fix:** automate detection + contract with vendor — not another heroic Monday.
+
+---
 
 
-> **📷 Insert table screenshot here (Table 12)**  
-> *MTTR vs MTBF — use both*
+> **📷 Insert table screenshot here (Table 13)**
+> *Table*
 
 <!-- Empty slot -->
 
@@ -321,16 +381,23 @@ This article focuses on the two you asked for — **deployment frequency** and *
 
 **Real-life analogy:** DORA is not “who’s fastest.” It is “can you **jog reliably** without tripping every third step?”
 
----
+### 📋 Work story (simple)
 
-## Deployment frequency — speed with guardrails
+**Team A:** deploys once a month. Release day is **stressful**, **12-hour** war room, everyone afraid.  
+**Team B:** deploys **daily**, small changes, rollback is boring and routine.
+
+When Team B breaks prod, they fix it in **minutes**. When Team A breaks prod, it is a **company-wide event**.
+
+DORA is not about bragging — it is about **how scary Tuesday feels**.
+
+---
 
 **Deployment frequency** = how often you successfully release to production (hourly, daily, weekly…).
 
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 13)**  
+> **📷 Insert table screenshot here (Table 14)**
 > *Junior → senior shift*
 
 <!-- Empty slot -->
@@ -352,9 +419,16 @@ This article focuses on the two you asked for — **deployment frequency** and *
 
 **Senior question:** “What **percentage** of deploys are low-risk vs high-risk changes — and do we treat them differently?”
 
----
+### 📋 Work story (simple)
 
-## Change failure rate — the price of moving fast
+You change **one button color** and **one database migration** in the same deploy.  
+The button ships fine. The migration **locks the table** for an hour.
+
+**Senior habit:** split changes — **small deploys** so when something breaks, you know **which change** did it.
+
+**Everyday analogy:** Do not pack **glass vases** and **rocks** in the same box.
+
+---
 
 **CFR (Change Failure Rate)** = percentage of production changes that cause **degraded service** or require **hotfix / rollback**.
 
@@ -369,7 +443,7 @@ $$
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 14)**  
+> **📷 Insert table screenshot here (Table 15)**
 > *Junior → senior shift*
 
 <!-- Empty slot -->
@@ -380,7 +454,7 @@ $$
 ### Healthy tension: frequency ↑ vs CFR ↑
 
 
-> **📷 Insert table screenshot here (Table 15)**  
+> **📷 Insert table screenshot here (Table 16)**
 > *Healthy tension: frequency ↑ vs CFR ↑*
 
 <!-- Empty slot -->
@@ -388,9 +462,14 @@ $$
 
 **Pitfall:** Gaming CFR by defining “failure” too narrowly (ignore customer-impacting bugs that did not trigger rollback).
 
----
+### 📋 Work story (simple)
 
-## Business value & efficiency — the conversation that enters the room
+Last month: **20 deploys**, **4** caused incidents (rollback or hotfix).  
+**CFR = 4/20 = 20%.** That is not shame — that is a **signal** to improve tests or shrink batches.
+
+Hiding the 4 failures does not help. **Your manager cannot fund fixes** for problems that “do not exist.”
+
+---
 
 At some point, someone asks: **“Was this worth it?”**
 
@@ -398,9 +477,15 @@ Not morally — **economically**. Seniors translate engineering work into langua
 
 This is not selling out. It is **prioritization with lights on**.
 
----
+### 📋 Work story (simple)
 
-## ROI — did the thing earn its keep?
+Leadership asks: “Should we build **Tool X** or **Tool Y**?”  
+**Junior answer:** “Tool X uses Kubernetes and Rust — it’s modern.”  
+**Senior answer:** “Tool Y saves **20 analyst hours/week** and costs **half** as much to run. Rough **ROI** in one slide.”
+
+Guess which answer gets budget.
+
+---
 
 **ROI (Return on Investment)** = financial gain relative to cost.
 
@@ -415,7 +500,7 @@ $$
 ### Examples in IT
 
 
-> **📷 Insert table screenshot here (Table 16)**  
+> **📷 Insert table screenshot here (Table 17)**
 > *Examples in IT*
 
 <!-- Empty slot -->
@@ -424,7 +509,7 @@ $$
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 17)**  
+> **📷 Insert table screenshot here (Table 18)**
 > *Junior → senior shift*
 
 <!-- Empty slot -->
@@ -434,16 +519,23 @@ $$
 
 **Pitfall:** ROI spreadsheets that ignore **maintenance cost**, **on-call burden**, and **security exposure**.
 
----
+### 📋 Work story (simple)
 
-## Resource utilization — full is not always healthy
+You build a **shiny internal tool** in 3 months. It saves **2 hours/week** for **3 people**.  
+**Benefit:** ~6 hours/week. **Cost:** 3 engineer-months + hosting + on-call when it breaks.
+
+**Senior pause:** Was that worth it — or should we have bought an off-the-shelf tool?
+
+**Everyday analogy:** Buying a **bread machine** only pays off if you bake **often** — not once a month.
+
+---
 
 **Resource utilization** = how much of available capacity is used — CPU, memory, disk, **or human hours**.
 
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 18)**  
+> **📷 Insert table screenshot here (Table 19)**
 > *Junior → senior shift*
 
 <!-- Empty slot -->
@@ -459,16 +551,23 @@ $$
 
 **Data/engineering angle:** Batch pipelines at 100% cluster utilization sound great until **one late partition** delays everything downstream.
 
----
+### 📋 Work story (simple)
 
-## On-time delivery rate — deadlines vs commitments
+Your team is **100% allocated** on the roadmap.  
+A **security CVE** lands. A **production incident** lands. Same week.
+
+Nobody has slack — so **both** slip. That is not bad luck. That is **utilization without headroom**.
+
+**Office analogy:** If every meeting slot is booked, there is **no time for the fire drill** — until the fire is real.
+
+---
 
 **On-time delivery rate** = percentage of milestones, sprint commitments, or project phases completed by the **original** deadline.
 
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 19)**  
+> **📷 Insert table screenshot here (Table 20)**
 > *Junior → senior shift*
 
 <!-- Empty slot -->
@@ -484,9 +583,17 @@ $$
 
 **Pitfall:** Gaming on-time rate by **moving deadlines** silently or shrinking scope without telling stakeholders.
 
----
+### 📋 Work story (simple)
 
-## Security & risk — clocks that never pause
+Sprint goal: “Ship checkout v2.”  
+Friday: team **drops** tax calculation and **moves** the deadline quietly.  
+**On-time rate:** 100%. **Trust:** down.
+
+**Senior move:** “We will ship **payments** on time; **tax** moves to next sprint” — said **Monday**, not Friday.
+
+**Everyday analogy:** Promising guests **dinner at 7** but serving **only dessert** on time is not “on time.”
+
+---
 
 Security is not a phase at the end. It is **exposure over time**:
 
@@ -496,9 +603,14 @@ Security is not a phase at the end. It is **exposure over time**:
 
 Seniors think in **timers**, not checkboxes.
 
----
+### 📋 Work story (simple)
 
-## Time to detect — the silent gap that hurts
+A **leaked API key** sits in a public repo for **11 days** before anyone notices.  
+**Fix** took 1 hour. **Damage window:** 11 days.
+
+**TTD** was the real problem — not the patch speed.
+
+---
 
 **TTD (Time to Detect)** = duration from when a **breach, vulnerability exploit, or serious misconfiguration** occurs → when the team **knows**.
 
@@ -507,13 +619,20 @@ TTD is often worse than time to fix — because until you detect, **nothing else
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 20)**  
+> **📷 Insert table screenshot here (Table 21)**
 > *Junior → senior shift*
 
 <!-- Empty slot -->
 
 
 **Real-life analogy:** A water leak behind the wall — the damage isn’t the pipe breaking; it’s the **weeks until you see the stain**.
+
+### 📋 Work story (simple)
+
+Someone left an **S3 bucket** open. Customers were not complaining — yet.  
+A **security scan** (or a friendly researcher) finds it **before** data is sold.
+
+**Low TTD** = embarrassment and a ticket. **High TTD** = headline news.
 
 ### What shrinks TTD
 
@@ -538,7 +657,7 @@ Measure it as:
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 21)**  
+> **📷 Insert table screenshot here (Table 22)**
 > *Junior → senior shift*
 
 <!-- Empty slot -->
@@ -555,9 +674,15 @@ Measure it as:
 
 **Pitfall:** Measuring “patches applied” without measuring **exposure window** — 100 patches late is not hygiene.
 
----
+### 📋 Work story (simple)
 
-## How the metrics fit together — one senior dashboard in your head
+**Critical CVE** drops Tuesday.  
+**Junior team:** schedules patch for **quarterly maintenance** in 6 weeks.  
+**Senior team:** test patch Wednesday, prod Thursday — **exposure window: 2 days**.
+
+**Everyday analogy:** You do not wait six weeks to fix a **flat tire** because “maintenance is scheduled monthly.”
+
+---
 
 You do not need seventeen dashboards. You need **one story**:
 
@@ -609,7 +734,7 @@ flowchart TB
 If you are growing toward senior impact, pick **one metric per area** and make it honest:
 
 
-> **📷 Insert table screenshot here (Table 22)**  
+> **📷 Insert table screenshot here (Table 23)**
 > *Conclusion — what to optimize next quarter*
 
 <!-- Empty slot -->

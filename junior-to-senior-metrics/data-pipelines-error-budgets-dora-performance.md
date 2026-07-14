@@ -25,7 +25,9 @@
 
 **Who this is for:** data engineers, analytics engineers, and platform folks who own **pipelines, warehouses, and SLAs to downstream teams** — not generic product on-call (though the ideas rhyme).
 
-> **New to the jargon?** Read **[Terms defined — data pipeline dictionary](#terms-defined--data-pipeline-dictionary)** first. Shared metrics (SLO, MTTR, DORA, etc.) are defined in [Part 1’s dictionary](https://github.com/chiheb08/medium-content/blob/main/junior-to-senior-metrics/junior-to-senior-thinking-metrics.md#terms-defined--the-dictionary-read-this-first).
+> **How this article reads:** Look for **📋 Work story** boxes — short scenes from real data jobs (finance dashboards, late upstream files, bad dbt deploys) explained in plain language.
+
+> **New to the jargon?** Read **[Terms defined — data pipeline dictionary](#terms-defined--data-pipeline-dictionary)** first.
 
 ---
 
@@ -116,9 +118,17 @@ In [Part 1](https://github.com/chiheb08/medium-content/blob/main/junior-to-senio
 
 This article is the **data-pipelines** follow-up: error budgets, DORA, and performance reviews — with examples you can steal for your next 1:1.
 
----
+### 📋 Work story (simple) — the scene everyone knows
 
-## The data pipeline promise — what you are actually selling
+**7:55 a.m.** — Finance opens the CEO revenue dashboard.  
+**7:56 a.m.** — Slack: “Why does yesterday show **$0**?”  
+You check Airflow: **all green** ✅  
+You check the mart: **empty partition** for yesterday because upstream landed late and the job “succeeded” with **zero rows**.
+
+**Junior:** “But the task didn’t fail.”  
+**Senior:** “The **promise** failed — and Finance does not care about our task color.”
+
+---
 
 Every pipeline makes an implicit promise. Seniors make it **explicit**.
 
@@ -132,9 +142,19 @@ Every pipeline makes an implicit promise. Seniors make it **explicit**.
 
 **Pitfall:** Teams optimize **job success rate** while **freshness SLO** is on fire — like celebrating an on-time flight that landed in the wrong city.
 
----
+### 📋 Work story (simple) — five promises, one angry PM
 
-## SLIs and SLOs for pipelines — pick the right promise
+| Who complained | What they actually wanted |
+|--------------|-------------------------|
+| **Finance** | “Numbers by 8 a.m.” (**freshness**) |
+| **Analytics** | “No duplicate users” (**correctness**) |
+| **Legal** | “We can trace this metric” (**lineage**) |
+| **Ops** | “Table queryable during month-end” (**availability**) |
+| **You** | “Airflow task green” (**not the same list**) |
+
+**Real-life analogy:** A restaurant promises **hot food, correct bill, clean table**. The kitchen timer beeping only covers **one** of those.
+
+---
 
 ### SLI — Service Level Indicator
 
@@ -162,7 +182,16 @@ Maybe: “Executive dashboard refreshed by 8 a.m. local **or** incident declared
 
 **Real-life analogy:** **Newspaper deadline** — the printing press working (job green) is not the same as **papers on doorsteps by 6 a.m.**
 
-### Junior → senior shift (pipeline SLOs)
+### 📋 Work story (simple)
+
+You promise Product: **“Sales mart ready by 6 a.m.”**  
+That is the **SLO**.  
+Legal’s contract with a partner might say **“8 a.m. or penalty”** — that is the **SLA**.  
+You aim for **6** so missing by a bit still beats **8**.
+
+**Everyday analogy:** You set your alarm **30 minutes early** so traffic does not make you late for the interview.
+
+---
 
 | Junior thinking | Senior thinking |
 |-----------------|-----------------|
@@ -217,9 +246,17 @@ $$
 
 **Senior move:** Log **why** budget burned in the incident channel — “late because Stripe export slipped” vs “late because we had no alert.”
 
----
+### 📋 Work story (simple) — spending budget on purpose
 
-## When to burn budget vs when to freeze changes
+Black Friday week. Marketing runs a **risky** catalog sync. It might slip freshness by **2 hours** — but revenue depends on it.  
+**Senior:** “We have **40% error budget** left. This spend is **worth it** — I’ll post in #data-incidents and watch the partition alerts.”
+
+Same week, someone wants a **cosmetic refactor** of a stable mart.  
+**Senior:** “Budget is thin — defer to January.”
+
+**Everyday analogy:** You save vacation days for **family wedding**, not for **skipping work when you’re bored**.
+
+---
 
 Error budgets are useless without **policy**. A practical playbook:
 
@@ -255,9 +292,15 @@ Error budgets are useless without **policy**. A practical playbook:
 
 That is not bureaucracy. That is **risk management in plain language**.
 
----
+### 📋 Work story (simple) — saying no with numbers
 
-## DORA for data teams — same ideas, different nouns
+Your PM wants both **new metrics** and **zero risk** this week.  
+**Junior:** silent stress + weekend work.  
+**Senior:** “Freshness SLO has **12% budget** left. Pick **one** schema change; the other waits. Here’s the chart.”
+
+Numbers turn arguments into **choices**.
+
+---
 
 [DORA metrics](https://dora.dev/) were framed for **application delivery**. Data platforms map cleanly if you translate nouns:
 
@@ -304,9 +347,16 @@ Be consistent in your metrics:
 
 **Unhealthy pattern:** Frequency ↑, **dashboards wrong half the week** — you are not elite, you are **roulette**.
 
----
+### 📋 Work story (simple) — small merges beat Friday night
 
-## Change failure rate — when a merge hurts consumers
+**Old way:** one **big** migration every 6 weeks — Friday 11 p.m., pizza, prayer.  
+**New way:** ship **one dbt model** per day with tests; shadow table `_v2` for a week, then swap.
+
+Deploy frequency goes **up**. Bad surprises go **down**.
+
+**Everyday analogy:** Packing for a trip **a little each night** beats one panic suitcase at 4 a.m.
+
+---
 
 **CFR for data** should include failures that **matter downstream**, not only task exceptions:
 
@@ -332,9 +382,19 @@ $$
 - **Canary datasets** — publish to `_beta` schema first
 - **Row-level comparisons** old vs new before swap
 
----
+### 📋 Work story (simple) — the dbt deploy that “succeeded”
 
-## Lead time and MTTR — recovery in data land
+You merge a dbt model rename: `revenue` → `total_revenue`.  
+dbt run: **green**.  
+Looker dashboard: **broken** all morning because nobody updated the explore.  
+Finance used **cached wrong** numbers until 2 p.m.
+
+**CFR event?** Yes — if your policy says **consumer harm** counts.  
+**Lesson:** deploy includes **downstream comms**, not only SQL.
+
+**Everyday analogy:** You changed the **street name** but did not update **Google Maps**.
+
+---
 
 ### Lead time for changes
 
@@ -363,7 +423,15 @@ For pipelines, recovery might mean:
 
 **Real-life analogy:** Restaurant serves undercooked chicken (incident). MTTR is not “chef learned why” — it is **how fast plates stop leaving the kitchen wrong** and **customers get told**.
 
-### Streaming note
+### 📋 Work story (simple) — wrong numbers in prod
+
+**9:00** — bad join doubles revenue in the mart.  
+**9:05** — senior disables the mart view, pins message in Slack: **“Use yesterday until 11:00.”**  
+**10:30** — partition backfill completes, tests pass, view re-enabled.
+
+**Wrong data exposure:** ~1.5 hours — that is what **MTTR** measures, not “when dbt turned green again.”
+
+---
 
 For Kafka/Flink paths, MTTR often pairs with **lag SLO** and **duplicate handling**. Recovery = lag back under threshold **and** correctness checks green.
 
@@ -390,6 +458,15 @@ Chronic patterns:
 
 **Real-life analogy:** If your car needs a jump start **every Monday**, the problem is not “you forgot cables” — it is the **alternator**.
 
+### 📋 Work story (simple) — the file that is always late
+
+Every Monday, the **vendor CSV** lands at 10:00 instead of 6:00. Someone re-runs the DAG. Green by noon.  
+**Six months** of this — nobody asks **why Monday**.
+
+Senior move: alert on **upstream SLA**, not only your task. Fix the **vendor contract** or **buffer the SLO**.
+
+**Everyday analogy:** Your bus is **late every Monday** — buying a faster alarm clock does not fix the bus.
+
 ---
 
 ## Metrics dashboards data seniors actually watch
@@ -411,11 +488,26 @@ One screen is enough if it answers **“are we trustworthy right now?”**
 
 **Real-life analogy:** Air traffic control does not only watch “planes took off.” They watch **delays, near-misses, and runway capacity** together.
 
+### 📋 Work story (simple) — one screen in standup
+
+Monday standup: someone shares **one** dashboard — freshness lag, SLO %, CFR last week.  
+**No** scrolling through 40 Grafana tabs.  
+When finance asks “can we trust revenue?”, the answer is **one number**: **99.2% on-time, budget green**.
+
+**Everyday analogy:** Doctor checks **blood pressure + heart rate + temperature** — not 50 lab reports every visit.
+
 ---
 
-## Performance reviews — prove impact without ticket spam
-
 Managers are not impressed by **47 JIRA tickets closed**. They remember **trust, risk removed, and money/time saved**.
+
+### 📋 Work story (simple) — what your manager remembers
+
+**Engineer A:** “Closed 52 tickets, maintained DAGs.”  
+**Engineer B:** “Revenue mart **99.4% on-time** (target 99%). Cut bad publishes from **8% → 2%**. Saved **~$4k/month** cluster cost.”
+
+Both worked hard. Only one story survives **budget season**.
+
+---
 
 ### Frame outcomes, not activity
 
@@ -468,9 +560,15 @@ Copy into your notes and fill honestly:
 3. Any **repeat** failure pattern? (MTBF)  
 4. One **consumer** check-in — do numbers match their reality?
 
----
+### 📋 Work story (simple) — 15 minutes every Friday
 
-## Conclusion — the senior data engineer sentence
+Friday **3:00 p.m.**, calendar block: **pipeline health**.  
+Open one page: SLO %, CFR, any repeat incident.  
+Takes **15 minutes** — catches the “always late Monday file” before it becomes **quarterly fire drill**.
+
+**Everyday analogy:** Weekly **weigh-in** on a diet — small check beats discovering in June you never lost the weight.
+
+---
 
 Junior you asked: **“Did the job succeed?”**  
 Senior you asks: **“Did we keep our data promise — and did we spend our error budget wisely?”**
