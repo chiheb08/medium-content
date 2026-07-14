@@ -29,27 +29,84 @@
 
 **Stacks referenced:** Kafka-style logs, Spark Structured Streaming, Flink — patterns apply to Kinesis, Pulsar, Redpanda, and managed stream processors too.
 
+> **New to the jargon?** Read **[Terms defined — streaming dictionary](#terms-defined--streaming-dictionary)** first. For SLO, error budget, MTTR, DORA, see [Part 1](https://github.com/chiheb08/medium-content/blob/main/junior-to-senior-metrics/junior-to-senior-thinking-metrics.md#terms-defined--the-dictionary-read-this-first). For batch pipelines, see [Part 2’s dictionary](https://github.com/chiheb08/medium-content/blob/main/junior-to-senior-metrics/data-pipelines-error-budgets-dora-performance.md#terms-defined--data-pipeline-dictionary).
+
+---
+
+## Terms defined — streaming dictionary
+
+### Streaming in one sentence
+
+**Streaming** = data is processed **continuously** as events arrive, instead of waiting for a nightly batch job to finish.
+
+### Core streaming concepts
+
+
+> **📷 Insert table screenshot here (Table 1)**  
+> *Core streaming concepts*
+
+<!-- Empty slot -->
+
+
+### Time and correctness
+
+
+> **📷 Insert table screenshot here (Table 2)**  
+> *Time and correctness*
+
+<!-- Empty slot -->
+
+
+### Delivery and failure words
+
+
+> **📷 Insert table screenshot here (Table 3)**  
+> *Delivery and failure words*
+
+<!-- Empty slot -->
+
+
+### Schema and deploy
+
+
+> **📷 Insert table screenshot here (Table 4)**  
+> *Schema and deploy*
+
+<!-- Empty slot -->
+
+
+### Metrics reminders (Part 1 & 2)
+
+
+> **📷 Insert table screenshot here (Table 5)**  
+> *Metrics reminders (Part 1 & 2)*
+
+<!-- Empty slot -->
+
+
 ---
 
 ## Table of contents
 
-1. [Why streaming needs Part 3 — the green dashboard trap](#why-streaming-needs-part-3--the-green-dashboard-trap)
-2. [Batch vs streaming promises — different scoreboards](#batch-vs-streaming-promises--different-scoreboards)
-3. [The streaming SLI menu — what to measure](#the-streaming-sli-menu--what-to-measure)
-4. [Consumer lag — the metric everyone cites (and misreads)](#consumer-lag--the-metric-everyone-cites-and-misreads)
-5. [End-to-end latency — when the event actually matters](#end-to-end-latency--when-the-event-actually-matters)
-6. [Event time, processing time, and watermarks](#event-time-processing-time-and-watermarks)
-7. [Completeness and correctness under delay](#completeness-and-correctness-under-delay)
-8. [Delivery semantics — what you can actually promise](#delivery-semantics--what-you-can-actually-promise)
-9. [Error budgets for always-on pipelines](#error-budgets-for-always-on-pipelines)
-10. [DORA when deploy means savepoint](#dora-when-deploy-means-savepoint)
-11. [MTTR and MTBF in stream land](#mttr-and-mtbf-in-stream-land)
-12. [Backpressure, skew, and utilization](#backpressure-skew-and-utilization)
-13. [Schema change and compatibility — silent CFR multipliers](#schema-change-and-compatibility--silent-cfr-multipliers)
-14. [The senior streaming dashboard](#the-senior-streaming-dashboard)
-15. [Performance reviews for streaming engineers](#performance-reviews-for-streaming-engineers)
-16. [Quarter plan — streaming edition](#quarter-plan--streaming-edition)
-17. [Conclusion — the senior streaming sentence](#conclusion--the-senior-streaming-sentence)
+1. [Terms defined — streaming dictionary](#terms-defined--streaming-dictionary)
+2. [Why streaming needs Part 3 — the green dashboard trap](#why-streaming-needs-part-3--the-green-dashboard-trap)
+2. [Why streaming needs Part 3 — the green dashboard trap](#why-streaming-needs-part-3--the-green-dashboard-trap)
+3. [Batch vs streaming promises — different scoreboards](#batch-vs-streaming-promises--different-scoreboards)
+4. [The streaming SLI menu — what to measure](#the-streaming-sli-menu--what-to-measure)
+5. [Consumer lag — the metric everyone cites (and misreads)](#consumer-lag--the-metric-everyone-cites-and-misreads)
+6. [End-to-end latency — when the event actually matters](#end-to-end-latency--when-the-event-actually-matters)
+7. [Event time, processing time, and watermarks](#event-time-processing-time-and-watermarks)
+8. [Completeness and correctness under delay](#completeness-and-correctness-under-delay)
+9. [Delivery semantics — what you can actually promise](#delivery-semantics--what-you-can-actually-promise)
+10. [Error budgets for always-on pipelines](#error-budgets-for-always-on-pipelines)
+11. [DORA when deploy means savepoint](#dora-when-deploy-means-savepoint)
+12. [MTTR and MTBF in stream land](#mttr-and-mtbf-in-stream-land)
+13. [Backpressure, skew, and utilization](#backpressure-skew-and-utilization)
+14. [Schema change and compatibility — silent CFR multipliers](#schema-change-and-compatibility--silent-cfr-multipliers)
+15. [The senior streaming dashboard](#the-senior-streaming-dashboard)
+16. [Performance reviews for streaming engineers](#performance-reviews-for-streaming-engineers)
+17. [Quarter plan — streaming edition](#quarter-plan--streaming-edition)
+18. [Conclusion — the senior streaming sentence](#conclusion--the-senior-streaming-sentence)
 
 ---
 
@@ -75,7 +132,7 @@
 ## Batch vs streaming promises — different scoreboards
 
 
-> **📷 Insert table screenshot here (Table 1)**  
+> **📷 Insert table screenshot here (Table 6)**  
 > *Batch vs streaming promises — different scoreboards*
 
 <!-- Empty slot -->
@@ -90,7 +147,7 @@
 Pick **one primary SLI per consumer-facing stream** — not twelve graphs nobody owns.
 
 
-> **📷 Insert table screenshot here (Table 2)**  
+> **📷 Insert table screenshot here (Table 7)**  
 > *The streaming SLI menu — what to measure*
 
 <!-- Empty slot -->
@@ -102,7 +159,9 @@ Pick **one primary SLI per consumer-facing stream** — not twelve graphs nobody
 
 ## Consumer lag — the metric everyone cites (and misreads)
 
-**Consumer lag** = how far a consumer group is behind the **end of the log** (Kafka: `records-lag-max`; Flink: checkpoint alignment + source lag metrics).
+**Consumer lag** = how far a consumer group is behind the **end of the log** (Kafka: `records-lag-max`; Flink: source lag + checkpoint health).
+
+**Defined in plain English:** Imagine a **conveyor belt** of events. Lag is “how many packages are still **in front of you** before you are caught up to the newest one.” Low lag = you are keeping pace **right now**.
 
 ### What lag actually means
 
@@ -114,7 +173,7 @@ Pick **one primary SLI per consumer-facing stream** — not twelve graphs nobody
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 3)**  
+> **📷 Insert table screenshot here (Table 8)**  
 > *Junior → senior shift*
 
 <!-- Empty slot -->
@@ -161,7 +220,7 @@ A Flink job can run at 40% CPU while latency drifts because:
 ### SLO framing
 
 
-> **📷 Insert table screenshot here (Table 4)**  
+> **📷 Insert table screenshot here (Table 9)**  
 > *SLO framing*
 
 <!-- Empty slot -->
@@ -176,7 +235,7 @@ A Flink job can run at 40% CPU while latency drifts because:
 ### Two clocks
 
 
-> **📷 Insert table screenshot here (Table 5)**  
+> **📷 Insert table screenshot here (Table 10)**  
 > *Two clocks*
 
 <!-- Empty slot -->
@@ -197,7 +256,7 @@ Used to **close windows** and emit aggregates.
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 6)**  
+> **📷 Insert table screenshot here (Table 11)**  
 > *Junior → senior shift*
 
 <!-- Empty slot -->
@@ -216,7 +275,7 @@ Explicit rule: “Accept updates up to **10 minutes** late; after that, side out
 Streaming systems often choose **approximate now** vs **correct later**.
 
 
-> **📷 Insert table screenshot here (Table 7)**  
+> **📷 Insert table screenshot here (Table 12)**  
 > *Completeness and correctness under delay*
 
 <!-- Empty slot -->
@@ -239,7 +298,7 @@ That is honesty — not weakness.
 Marketing loves **exactly-once**. Seniors translate:
 
 
-> **📷 Insert table screenshot here (Table 8)**  
+> **📷 Insert table screenshot here (Table 13)**  
 > *Delivery semantics — what you can actually promise*
 
 <!-- Empty slot -->
@@ -260,7 +319,7 @@ Marketing loves **exactly-once**. Seniors translate:
 - **Side effects** outside DB (email, webhook) — often **at-least-once** forever
 
 
-> **📷 Insert table screenshot here (Table 9)**  
+> **📷 Insert table screenshot here (Table 14)**  
 > *What to document*
 
 <!-- Empty slot -->
@@ -280,7 +339,7 @@ Batch budgets often count **missed days**. Streaming budgets count **bad minutes
 ### What burns streaming budget
 
 
-> **📷 Insert table screenshot here (Table 10)**  
+> **📷 Insert table screenshot here (Table 15)**  
 > *What burns streaming budget*
 
 <!-- Empty slot -->
@@ -289,7 +348,7 @@ Batch budgets often count **missed days**. Streaming budgets count **bad minutes
 ### Green / yellow / red (streaming)
 
 
-> **📷 Insert table screenshot here (Table 11)**  
+> **📷 Insert table screenshot here (Table 16)**  
 > *Green / yellow / red (streaming)*
 
 <!-- Empty slot -->
@@ -304,7 +363,7 @@ Batch budgets often count **missed days**. Streaming budgets count **bad minutes
 Map DORA to streaming releases:
 
 
-> **📷 Insert table screenshot here (Table 12)**  
+> **📷 Insert table screenshot here (Table 17)**  
 > *DORA when deploy means savepoint*
 
 <!-- Empty slot -->
@@ -318,7 +377,7 @@ Map DORA to streaming releases:
 - **Compatible** schema changes (Avro/Protobuf rules)
 
 
-> **📷 Insert table screenshot here (Table 13)**  
+> **📷 Insert table screenshot here (Table 18)**  
 > *Safer streaming deploy patterns*
 
 <!-- Empty slot -->
@@ -342,8 +401,8 @@ Clock starts when **consumers** or **SLOs** hurt — not when you noticed a yell
 6. **Notify** downstream “do not automate trades on stream X”  
 
 
-> **📷 Insert table screenshot here (Table 14)**  
-> *“Lag zero — close incident.” — “Reconcile **counts** with source of truth.”*
+> **📷 Insert table screenshot here (Table 19)**  
+> *Table*
 
 <!-- Empty slot -->
 
@@ -384,7 +443,7 @@ One partition carries 40% of keys → one task holds the whole pipeline hostage.
 100% CPU on stream workers = **no burst headroom**. Seniors leave room for **replay** and **sale day**.
 
 
-> **📷 Insert table screenshot here (Table 15)**  
+> **📷 Insert table screenshot here (Table 20)**  
 > *Utilization (Part 1 callback)*
 
 <!-- Empty slot -->
@@ -403,8 +462,8 @@ Breaking change without plan = **CFR event**:
 - downstream SQL **silent** nulls.
 
 
-> **📷 Insert table screenshot here (Table 16)**  
-> *“JSON is flexible.” — JSON is **schema drift** with extra steps*
+> **📷 Insert table screenshot here (Table 21)**  
+> *Schema change and compatibility — silent CFR multipliers*
 
 <!-- Empty slot -->
 
@@ -420,7 +479,7 @@ Breaking change without plan = **CFR event**:
 One page. Answers: **“Can we trust live data right now?”**
 
 
-> **📷 Insert table screenshot here (Table 17)**  
+> **📷 Insert table screenshot here (Table 22)**  
 > *The senior streaming dashboard*
 
 <!-- Empty slot -->
@@ -435,7 +494,7 @@ One page. Answers: **“Can we trust live data right now?”**
 ### Weak vs strong bullets
 
 
-> **📷 Insert table screenshot here (Table 18)**  
+> **📷 Insert table screenshot here (Table 23)**  
 > *Weak vs strong bullets*
 
 <!-- Empty slot -->
@@ -457,7 +516,7 @@ One page. Answers: **“Can we trust live data right now?”**
 ## Quarter plan — streaming edition
 
 
-> **📷 Insert table screenshot here (Table 19)**  
+> **📷 Insert table screenshot here (Table 24)**  
 > *Quarter plan — streaming edition*
 
 <!-- Empty slot -->

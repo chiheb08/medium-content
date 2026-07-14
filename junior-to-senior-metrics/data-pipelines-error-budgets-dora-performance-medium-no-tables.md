@@ -13,7 +13,7 @@
 
 ---
 
-> **Medium paste version:** Empty slots where tables belong. Screenshot tables from `data-pipelines-error-budgets-dora-performance.md`.
+> **Medium paste version:** Empty slots for tables. Screenshot from full `.md` file.
 
 
 ## At a glance — what this follow-up gives you
@@ -28,24 +28,70 @@
 
 **Who this is for:** data engineers, analytics engineers, and platform folks who own **pipelines, warehouses, and SLAs to downstream teams** — not generic product on-call (though the ideas rhyme).
 
+> **New to the jargon?** Read **[Terms defined — data pipeline dictionary](#terms-defined--data-pipeline-dictionary)** first. Shared metrics (SLO, MTTR, DORA, etc.) are defined in [Part 1’s dictionary](https://github.com/chiheb08/medium-content/blob/main/junior-to-senior-metrics/junior-to-senior-thinking-metrics.md#terms-defined--the-dictionary-read-this-first).
+
+---
+
+## Terms defined — data pipeline dictionary
+
+Terms that confuse **non-data** folks — or juniors hearing them for the first time.
+
+### Core ideas
+
+
+> **📷 Insert table screenshot here (Table 1)**  
+> *Core ideas*
+
+<!-- Empty slot -->
+
+
+### Tools you will hear (not required to master every one)
+
+
+> **📷 Insert table screenshot here (Table 2)**  
+> *Tools you will hear (not required to master every one)*
+
+<!-- Empty slot -->
+
+
+### Data quality and shape
+
+
+> **📷 Insert table screenshot here (Table 3)**  
+> *Data quality and shape*
+
+<!-- Empty slot -->
+
+
+### Metrics from Part 1 (quick reminder)
+
+
+> **📷 Insert table screenshot here (Table 4)**  
+> *Metrics from Part 1 (quick reminder)*
+
+<!-- Empty slot -->
+
+
 ---
 
 ## Table of contents
 
-1. [Why data pipelines need their own sequel](#why-data-pipelines-need-their-own-sequel)
-2. [The data pipeline promise — what you are actually selling](#the-data-pipeline-promise--what-you-are-actually-selling)
-3. [SLIs and SLOs for pipelines — pick the right promise](#slis-and-slos-for-pipelines--pick-the-right-promise)
-4. [Error budgets in practice — spending trust on purpose](#error-budgets-in-practice--spending-trust-on-purpose)
-5. [When to burn budget vs when to freeze changes](#when-to-burn-budget-vs-when-to-freeze-changes)
-6. [DORA for data teams — same ideas, different nouns](#dora-for-data-teams--same-ideas-different-nouns)
-7. [Deployment frequency — shipping pipeline change safely](#deployment-frequency--shipping-pipeline-change-safely)
-8. [Change failure rate — when a merge hurts consumers](#change-failure-rate--when-a-merge-hurts-consumers)
-9. [Lead time and MTTR — recovery in data land](#lead-time-and-mttr--recovery-in-data-land)
-10. [MTBF — pipelines that break every Tuesday](#mtbf--pipelines-that-break-every-tuesday)
-11. [Metrics dashboards data seniors actually watch](#metrics-dashboards-data-seniors-actually-watch)
-12. [Performance reviews — prove impact without ticket spam](#performance-reviews--prove-impact-without-ticket-spam)
-13. [A quarter plan template for pipeline owners](#a-quarter-plan-template-for-pipeline-owners)
-14. [Conclusion — the senior data engineer sentence](#conclusion--the-senior-data-engineer-sentence)
+1. [Terms defined — data pipeline dictionary](#terms-defined--data-pipeline-dictionary)
+2. [Why data pipelines need their own sequel](#why-data-pipelines-need-their-own-sequel)
+2. [Why data pipelines need their own sequel](#why-data-pipelines-need-their-own-sequel)
+3. [The data pipeline promise — what you are actually selling](#the-data-pipeline-promise--what-you-are-actually-selling)
+4. [SLIs and SLOs for pipelines — pick the right promise](#slis-and-slos-for-pipelines--pick-the-right-promise)
+5. [Error budgets in practice — spending trust on purpose](#error-budgets-in-practice--spending-trust-on-purpose)
+6. [When to burn budget vs when to freeze changes](#when-to-burn-budget-vs-when-to-freeze-changes)
+7. [DORA for data teams — same ideas, different nouns](#dora-for-data-teams--same-ideas-different-nouns)
+8. [Deployment frequency — shipping pipeline change safely](#deployment-frequency--shipping-pipeline-change-safely)
+9. [Change failure rate — when a merge hurts consumers](#change-failure-rate--when-a-merge-hurts-consumers)
+10. [Lead time and MTTR — recovery in data land](#lead-time-and-mttr--recovery-in-data-land)
+11. [MTBF — pipelines that break every Tuesday](#mtbf--pipelines-that-break-every-tuesday)
+12. [Metrics dashboards data seniors actually watch](#metrics-dashboards-data-seniors-actually-watch)
+13. [Performance reviews — prove impact without ticket spam](#performance-reviews--prove-impact-without-ticket-spam)
+14. [A quarter plan template for pipeline owners](#a-quarter-plan-template-for-pipeline-owners)
+15. [Conclusion — the senior data engineer sentence](#conclusion--the-senior-data-engineer-sentence)
 
 ---
 
@@ -69,10 +115,10 @@ This article is the **data-pipelines** follow-up: error budgets, DORA, and perfo
 Every pipeline makes an implicit promise. Seniors make it **explicit**.
 
 
-> **📷 Insert table screenshot here (Table 1)**  
+> **📷 Insert table screenshot here (Table 5)**  
 > *The data pipeline promise — what you are actually selling*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Pitfall:** Teams optimize **job success rate** while **freshness SLO** is on fire — like celebrating an on-time flight that landed in the wrong city.
@@ -83,7 +129,7 @@ Every pipeline makes an implicit promise. Seniors make it **explicit**.
 
 ### SLI — Service Level Indicator
 
-A **measurable signal** of pipeline health.
+**Defined:** A **measurable signal** of pipeline health — the specific number you track (e.g. “minutes late,” “% jobs failed”).
 
 Examples:
 
@@ -94,7 +140,7 @@ Examples:
 
 ### SLO — Service Level Objective
 
-An **internal target** for that SLI over a window (often 28 or 30 days).
+**Defined:** The **target** you commit to hit for that SLI over time (e.g. “on time 99% of days per month”).
 
 **Example (daily revenue mart):**
 
@@ -110,10 +156,10 @@ Maybe: “Executive dashboard refreshed by 8 a.m. local **or** incident declared
 ### Junior → senior shift (pipeline SLOs)
 
 
-> **📷 Insert table screenshot here (Table 2)**  
+> **📷 Insert table screenshot here (Table 6)**  
 > *Junior → senior shift (pipeline SLOs)*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 ---
@@ -154,10 +200,10 @@ $$
 ### Pipeline-specific budget spenders
 
 
-> **📷 Insert table screenshot here (Table 3)**  
+> **📷 Insert table screenshot here (Table 7)**  
 > *Pipeline-specific budget spenders*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Senior move:** Log **why** budget burned in the incident channel — “late because Stripe export slipped” vs “late because we had no alert.”
@@ -187,10 +233,10 @@ Error budgets are useless without **policy**. A practical playbook:
 - Escalate upstream SLAs with evidence (“we missed 4/4 days because source landed at 11:00”)
 
 
-> **📷 Insert table screenshot here (Table 4)**  
+> **📷 Insert table screenshot here (Table 8)**  
 > *Red zone — budget exhausted or SLA at risk*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Real-life analogy:** Hospital ER — when beds are full, **elective surgeries pause**. Not because surgery is bad, because **trust and capacity** are finite.
@@ -208,10 +254,10 @@ That is not bureaucracy. That is **risk management in plain language**.
 [DORA metrics](https://dora.dev/) were framed for **application delivery**. Data platforms map cleanly if you translate nouns:
 
 
-> **📷 Insert table screenshot here (Table 5)**  
+> **📷 Insert table screenshot here (Table 9)**  
 > *DORA for data teams — same ideas, different nouns*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Real-life analogy:** DORA for data is not “how fast we edit SQL.” It is **how often we safely change the factory line** without shipping defective batches.
@@ -241,10 +287,10 @@ Be consistent in your metrics:
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 6)**  
+> **📷 Insert table screenshot here (Table 10)**  
 > *Junior → senior shift*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Healthy pattern:** Frequency ↑ with **stable CFR** and **stable freshness SLO**.
@@ -258,10 +304,10 @@ Be consistent in your metrics:
 **CFR for data** should include failures that **matter downstream**, not only task exceptions:
 
 
-> **📷 Insert table screenshot here (Table 7)**  
+> **📷 Insert table screenshot here (Table 11)**  
 > *Change failure rate — when a merge hurts consumers*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 Rough form (same as Part 1):
@@ -303,10 +349,10 @@ For pipelines, recovery might mean:
 **MTTR clock starts** when consumers **could** be harmed — not when you noticed a red square for fun.
 
 
-> **📷 Insert table screenshot here (Table 8)**  
-> *Junior thinking — Senior thinking*
+> **📷 Insert table screenshot here (Table 12)**  
+> *Table*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Real-life analogy:** Restaurant serves undercooked chicken (incident). MTTR is not “chef learned why” — it is **how fast plates stop leaving the kitchen wrong** and **customers get told**.
@@ -329,10 +375,10 @@ Chronic patterns:
 - **Race** between two DAGs writing same table
 
 
-> **📷 Insert table screenshot here (Table 9)**  
-> *Junior thinking — Senior thinking*
+> **📷 Insert table screenshot here (Table 13)**  
+> *Table*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Senior move:** Track **repeat incidents** in postmortems — if the same root cause appears twice, the fix was cosmetic.
@@ -346,10 +392,10 @@ Chronic patterns:
 One screen is enough if it answers **“are we trustworthy right now?”**
 
 
-> **📷 Insert table screenshot here (Table 10)**  
+> **📷 Insert table screenshot here (Table 14)**  
 > *Metrics dashboards data seniors actually watch*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Utilization warning (from Part 1):** Cluster at 95% nightly sounds efficient until **one 20% larger source file** delays finance close. Headroom is **shock absorption**.
@@ -365,10 +411,10 @@ Managers are not impressed by **47 JIRA tickets closed**. They remember **trust,
 ### Frame outcomes, not activity
 
 
-> **📷 Insert table screenshot here (Table 11)**  
+> **📷 Insert table screenshot here (Table 15)**  
 > *Frame outcomes, not activity*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 ### Use the STAR pattern with metrics
@@ -401,10 +447,10 @@ That shows **judgment**, not heroics.
 Copy into your notes and fill honestly:
 
 
-> **📷 Insert table screenshot here (Table 12)**  
+> **📷 Insert table screenshot here (Table 16)**  
 > *A quarter plan template for pipeline owners*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Weekly habit (15 min):**

@@ -11,7 +11,7 @@
 
 ---
 
-> **Medium paste version:** This file has **empty slots** where tables belong. Screenshot tables from `junior-to-senior-thinking-metrics.md` and insert images in Medium. The original article with full tables is unchanged.
+> **Medium paste version:** Empty slots for tables. Screenshot from full `.md` file.
 
 
 ## At a glance — what this article gives you
@@ -25,29 +25,95 @@
 
 **One line to remember:** Juniors optimize **tasks**. Seniors optimize **systems, outcomes, and risk over time**.
 
+> **New to the jargon?** Skip to **[Terms defined — the dictionary](#terms-defined--the-dictionary-read-this-first)** before the deep sections. Every acronym and fuzzy phrase used in this series gets a plain-English line there.
+
+---
+
+## Terms defined — the dictionary (read this first)
+
+Read this section once if you are **not** an SRE, or if meetings feel like acronym bingo. Each term gets **what it means** and **why you should care**.
+
+### Work and delivery (everyday engineering)
+
+
+> **📷 Insert table screenshot here (Table 1)**  
+> *Work and delivery (everyday engineering)*
+
+<!-- Empty slot -->
+
+
+### Reliability promises (SLA family)
+
+
+> **📷 Insert table screenshot here (Table 2)**  
+> *Reliability promises (SLA family)*
+
+<!-- Empty slot -->
+
+
+### Recovery and stability over time
+
+
+> **📷 Insert table screenshot here (Table 3)**  
+> *Recovery and stability over time*
+
+<!-- Empty slot -->
+
+
+### Software delivery (DORA)
+
+
+> **📷 Insert table screenshot here (Table 4)**  
+> *Software delivery (DORA)*
+
+<!-- Empty slot -->
+
+
+### Business and planning
+
+
+> **📷 Insert table screenshot here (Table 5)**  
+> *Business and planning*
+
+<!-- Empty slot -->
+
+
+### Security and risk
+
+
+> **📷 Insert table screenshot here (Table 6)**  
+> *Security and risk*
+
+<!-- Empty slot -->
+
+
+**How to use this dictionary:** When a section introduces a term, it will often say **“Defined above”** or give a one-line reminder. You do not need to memorize — **recognize** the word and know where to look.
+
 ---
 
 ## Table of contents
 
-1. [The promotion nobody announces: your scoreboard changes](#the-promotion-nobody-announces-your-scoreboard-changes)
-2. [Junior thinking vs senior thinking — the big picture](#junior-thinking-vs-senior-thinking--the-big-picture)
-3. [System stability & reliability — when “it works on my machine” stops being enough](#system-stability--reliability--when-it-works-on-my-machine-stops-being-enough)
-4. [SLA vs SLO — promise vs target](#sla-vs-slo--promise-vs-target)
-5. [Error rates — the signal, not the shame number](#error-rates--the-signal-not-the-shame-number)
-6. [MTTR — how fast you recover when reality wins](#mttr--how-fast-you-recover-when-reality-wins)
-7. [MTBF — how long calm lasts between storms](#mtbf--how-long-calm-lasts-between-storms)
-8. [Software delivery & performance — DORA without the vanity leaderboard](#software-delivery--performance--dora-without-the-vanity-leaderboard)
-9. [Deployment frequency — speed with guardrails](#deployment-frequency--speed-with-guardrails)
-10. [Change failure rate — the price of moving fast](#change-failure-rate--the-price-of-moving-fast)
-11. [Business value & efficiency — the conversation that enters the room](#business-value--efficiency--the-conversation-that-enters-the-room)
-12. [ROI — did the thing earn its keep?](#roi--did-the-thing-earn-its-keep)
-13. [Resource utilization — full is not always healthy](#resource-utilization--full-is-not-always-healthy)
-14. [On-time delivery rate — deadlines vs commitments](#on-time-delivery-rate--deadlines-vs-commitments)
-15. [Security & risk — clocks that never pause](#security--risk--clocks-that-never-pause)
-16. [Time to detect — the silent gap that hurts](#time-to-detect--the-silent-gap-that-hurts)
-17. [Patching cadence — hygiene as a habit, not a hero sprint](#patching-cadence--hygiene-as-a-habit-not-a-hero-sprint)
-18. [How the metrics fit together — one senior dashboard in your head](#how-the-metrics-fit-together--one-senior-dashboard-in-your-head)
-19. [Conclusion — what to optimize next quarter](#conclusion--what-to-optimize-next-quarter)
+1. [Terms defined — the dictionary](#terms-defined--the-dictionary-read-this-first)
+2. [The promotion nobody announces: your scoreboard changes](#the-promotion-nobody-announces-your-scoreboard-changes)
+2. [The promotion nobody announces: your scoreboard changes](#the-promotion-nobody-announces-your-scoreboard-changes)
+3. [Junior thinking vs senior thinking — the big picture](#junior-thinking-vs-senior-thinking--the-big-picture)
+4. [System stability & reliability — when “it works on my machine” stops being enough](#system-stability--reliability--when-it-works-on-my-machine-stops-being-enough)
+5. [SLA vs SLO — promise vs target](#sla-vs-slo--promise-vs-target)
+6. [Error rates — the signal, not the shame number](#error-rates--the-signal-not-the-shame-number)
+7. [MTTR — how fast you recover when reality wins](#mttr--how-fast-you-recover-when-reality-wins)
+8. [MTBF — how long calm lasts between storms](#mtbf--how-long-calm-lasts-between-storms)
+9. [Software delivery & performance — DORA without the vanity leaderboard](#software-delivery--performance--dora-without-the-vanity-leaderboard)
+10. [Deployment frequency — speed with guardrails](#deployment-frequency--speed-with-guardrails)
+11. [Change failure rate — the price of moving fast](#change-failure-rate--the-price-of-moving-fast)
+12. [Business value & efficiency — the conversation that enters the room](#business-value--efficiency--the-conversation-that-enters-the-room)
+13. [ROI — did the thing earn its keep?](#roi--did-the-thing-earn-its-keep)
+14. [Resource utilization — full is not always healthy](#resource-utilization--full-is-not-always-healthy)
+15. [On-time delivery rate — deadlines vs commitments](#on-time-delivery-rate--deadlines-vs-commitments)
+16. [Security & risk — clocks that never pause](#security--risk--clocks-that-never-pause)
+17. [Time to detect — the silent gap that hurts](#time-to-detect--the-silent-gap-that-hurts)
+18. [Patching cadence — hygiene as a habit, not a hero sprint](#patching-cadence--hygiene-as-a-habit-not-a-hero-sprint)
+19. [How the metrics fit together — one senior dashboard in your head](#how-the-metrics-fit-together--one-senior-dashboard-in-your-head)
+20. [Conclusion — what to optimize next quarter](#conclusion--what-to-optimize-next-quarter)
 
 ---
 
@@ -78,10 +144,10 @@ This article is a map of that shift — through the metrics that start showing u
 ## Junior thinking vs senior thinking — the big picture
 
 
-> **📷 Insert table screenshot here (Table 1)**  
+> **📷 Insert table screenshot here (Table 7)**  
 > *Junior thinking vs senior thinking — the big picture*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 None of this means juniors are “wrong.” It means **the job’s definition of good expands**. The metrics below are how organizations make that expansion visible.
@@ -106,7 +172,9 @@ These two get swapped in meetings like `user_id` and `User Id`. They are related
 
 ### SLA — Service Level Agreement
 
-An **SLA** is a **contractual promise** to a customer (or internal customer). It usually includes:
+**Defined:** A **contractual promise** to a customer (or internal customer) about how reliable or fast a service will be — with consequences if you miss.
+
+An **SLA** usually includes:
 
 - what you measure (availability, latency, support response),
 - the threshold (e.g. 99.9% uptime per month),
@@ -116,7 +184,9 @@ An **SLA** is a **contractual promise** to a customer (or internal customer). It
 
 ### SLO — Service Level Objective
 
-An **SLO** is an **internal target** your team sets **before** you promise it externally. It should be **stricter** than the SLA — a buffer zone.
+**Defined:** An **internal target** your team sets — stricter than the SLA — so you have buffer before customers feel pain.
+
+An **SLO** should be **stricter** than the SLA — a buffer zone.
 
 **Example:**
 
@@ -128,13 +198,15 @@ An **SLO** is an **internal target** your team sets **before** you promise it ex
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 2)**  
+> **📷 Insert table screenshot here (Table 8)**  
 > *Junior → senior shift*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 ### Error budgets (the idea that connects SLA/SLO to daily work)
+
+**Defined:** The small amount of **allowed failure** (downtime, errors, slow requests) you can “spend” each month while still meeting your SLO — like a monthly allowance for things going wrong.
 
 If your SLO is 99.9% monthly, you have a small **error budget** — allowed unreliability before you breach the objective. Seniors ask:
 
@@ -158,10 +230,10 @@ Examples:
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 3)**  
+> **📷 Insert table screenshot here (Table 9)**  
 > *Junior → senior shift*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Real-life analogy:** A hospital tracks **complication rates** — not to shame surgeons, but to find **systemic** issues (scheduling, handoffs, equipment). A single bad day matters less than a **pattern**.
@@ -185,10 +257,10 @@ Note: DORA also uses **MTTR** for *failed changes* — how fast you restore afte
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 4)**  
+> **📷 Insert table screenshot here (Table 10)**  
 > *Junior → senior shift*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Real-life analogy:** Fire drills are not about pretending fires never happen. They are about **everyone knowing where the extinguishers are**.
@@ -215,10 +287,10 @@ Low MTBF → you are living in **chronic pain** — even if each fix is fast.
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 5)**  
+> **📷 Insert table screenshot here (Table 11)**  
 > *Junior → senior shift*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Real-life analogy:** Your car **starts** every morning (good MTTR when it rarely breaks) vs it **breaks down every month** (bad MTBF — you live at the mechanic).
@@ -226,10 +298,10 @@ Low MTBF → you are living in **chronic pain** — even if each fix is fast.
 ### MTTR vs MTBF — use both
 
 
-> **📷 Insert table screenshot here (Table 6)**  
+> **📷 Insert table screenshot here (Table 12)**  
 > *MTTR vs MTBF — use both*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Senior move:** Stop optimizing only firefighting (MTTR) while ignoring **why the fire started again** (MTBF).
@@ -258,10 +330,10 @@ This article focuses on the two you asked for — **deployment frequency** and *
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 7)**  
+> **📷 Insert table screenshot here (Table 13)**  
 > *Junior → senior shift*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Why seniors like higher frequency (when done right):**
@@ -297,10 +369,10 @@ $$
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 8)**  
+> **📷 Insert table screenshot here (Table 14)**  
 > *Junior → senior shift*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Real-life analogy:** If **one in five** flights you pilot ends in an emergency landing, the answer is not “fly less forever” — it is **training, checklists, and better instruments**.
@@ -308,10 +380,10 @@ $$
 ### Healthy tension: frequency ↑ vs CFR ↑
 
 
-> **📷 Insert table screenshot here (Table 9)**  
+> **📷 Insert table screenshot here (Table 15)**  
 > *Healthy tension: frequency ↑ vs CFR ↑*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Pitfall:** Gaming CFR by defining “failure” too narrowly (ignore customer-impacting bugs that did not trigger rollback).
@@ -343,19 +415,19 @@ $$
 ### Examples in IT
 
 
-> **📷 Insert table screenshot here (Table 10)**  
+> **📷 Insert table screenshot here (Table 16)**  
 > *Examples in IT*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 11)**  
+> **📷 Insert table screenshot here (Table 17)**  
 > *Junior → senior shift*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Real-life analogy:** Renovating a kitchen increases home value **only if** you plan to sell or use it for years — not every upgrade pays back.
@@ -371,10 +443,10 @@ $$
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 12)**  
+> **📷 Insert table screenshot here (Table 18)**  
 > *Junior → senior shift*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Real-life analogy:** A highway at **100% capacity** is not efficient — it is a **traffic jam**. Engineers want **headroom**, like lanes and on-ramps.
@@ -396,10 +468,10 @@ $$
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 13)**  
+> **📷 Insert table screenshot here (Table 19)**  
 > *Junior → senior shift*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Real-life analogy:** A restaurant that promises **every dish in 5 minutes** will either miss deadlines or serve raw chicken. **Honest promises** beat perfect plans.
@@ -435,10 +507,10 @@ TTD is often worse than time to fix — because until you detect, **nothing else
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 14)**  
+> **📷 Insert table screenshot here (Table 20)**  
 > *Junior → senior shift*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Real-life analogy:** A water leak behind the wall — the damage isn’t the pipe breaking; it’s the **weeks until you see the stain**.
@@ -466,10 +538,10 @@ Measure it as:
 ### Junior → senior shift
 
 
-> **📷 Insert table screenshot here (Table 15)**  
+> **📷 Insert table screenshot here (Table 21)**  
 > *Junior → senior shift*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 **Real-life analogy:** Dental cleaning every six months beats **one emergency root canal** after years of skipping flossing.
@@ -537,10 +609,10 @@ flowchart TB
 If you are growing toward senior impact, pick **one metric per area** and make it honest:
 
 
-> **📷 Insert table screenshot here (Table 16)**  
+> **📷 Insert table screenshot here (Table 22)**  
 > *Conclusion — what to optimize next quarter*
 
-<!-- Empty slot: paste your table image above this line in Medium -->
+<!-- Empty slot -->
 
 
 The mindset shift is not cynicism. It is **ownership at a longer time horizon**.

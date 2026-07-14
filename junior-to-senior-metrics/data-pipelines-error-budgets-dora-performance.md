@@ -25,24 +25,81 @@
 
 **Who this is for:** data engineers, analytics engineers, and platform folks who own **pipelines, warehouses, and SLAs to downstream teams** — not generic product on-call (though the ideas rhyme).
 
+> **New to the jargon?** Read **[Terms defined — data pipeline dictionary](#terms-defined--data-pipeline-dictionary)** first. Shared metrics (SLO, MTTR, DORA, etc.) are defined in [Part 1’s dictionary](https://github.com/chiheb08/medium-content/blob/main/junior-to-senior-metrics/junior-to-senior-thinking-metrics.md#terms-defined--the-dictionary-read-this-first).
+
+---
+
+## Terms defined — data pipeline dictionary
+
+Terms that confuse **non-data** folks — or juniors hearing them for the first time.
+
+### Core ideas
+
+| Term | Plain English | Why it matters |
+|------|---------------|----------------|
+| **Data pipeline** | Automated path that **moves and transforms** data from sources (apps, databases) to destinations (warehouse, dashboards) | Your job is not “run a script” — it is **keep a promise** to downstream users. |
+| **ETL / ELT** | **Extract** data → **Transform** → **Load** (or Load then Transform in the warehouse) | Naming varies; consumers care about **output**, not acronym order. |
+| **Data warehouse** | Central store for **analytics** (BigQuery, Snowflake, Redshift, etc.) | Where “the number” on the dashboard usually lives. |
+| **Mart / data mart** | A **table or dataset** built for a team or use case (e.g. “daily revenue mart”) | Often what **SLAs** attach to. |
+| **Consumer / downstream** | Team or system that **reads** your output | They do not see your green task — they see **wrong charts**. |
+| **Upstream** | System that **produces** data you depend on | Late upstream = late you — negotiate **their** SLA too. |
+
+### Tools you will hear (not required to master every one)
+
+| Term | Plain English | Why it matters |
+|------|---------------|----------------|
+| **Airflow** | Scheduler that runs workflows on a **calendar** or trigger | Green square = task ran — **not** always “data is correct.” |
+| **DAG** | **Directed Acyclic Graph** — a workflow diagram of tasks with dependencies (A before B) | “The DAG failed” = some step in the chain broke. |
+| **dbt** | Tool to **transform** data in the warehouse using SQL + tests | “Deploy” often means **merge models** to production target. |
+| **Spark** | Engine for **large-scale** batch (and sometimes stream) processing | Cluster can be “busy” while **freshness** still misses. |
+| **Partition** | Splitting a table by **date or key** (e.g. `dt=2026-07-14`) | Enables **rerun one day** without rebuilding everything. |
+| **Backfill** | **Reprocessing** past dates after a bug or schema fix | Recovery move — measure **MTTR** including backfill time. |
+
+### Data quality and shape
+
+| Term | Plain English | Why it matters |
+|------|---------------|----------------|
+| **Freshness** | How **up to date** the data is | “Revenue as of when?” — the #1 pipeline question. |
+| **Completeness** | Whether **all expected rows** arrived | Silent row loss is worse than a loud failure. |
+| **Correctness** | Whether values follow **business rules** (no dup keys, valid ranges) | Tests exist to catch this **before** publish. |
+| **Schema** | **Column names and types** of a dataset | Drift = upstream changed without telling you. |
+| **Schema drift** | Schema changed **unexpectedly** (column renamed, type changed) | Classic cause of **silent wrong data**. |
+| **dbt test / data quality check** | Automated rule: “this column unique,” “no nulls,” etc. | Failing test should **block** bad publishes. |
+| **Lineage** | **Where data came from** — upstream tables and jobs | Explains “why is this number wrong?” faster. |
+
+### Metrics from Part 1 (quick reminder)
+
+| Term | One-line reminder |
+|------|-------------------|
+| **SLI** | What you **measure** (e.g. “loaded before 8 a.m.”) |
+| **SLO** | Target you **aim for** (e.g. “99% of days on time”) |
+| **SLA** | **Contract** with someone outside the team |
+| **Error budget** | How much lateness/failure you can **afford** per month |
+| **MTTR** | How fast you **fix** a bad or late dataset |
+| **MTBF** | How often the **same** pipeline breaks again |
+| **DORA / CFR** | How often **changes** to pipelines cause harm |
+| **ROI** | Whether the pipeline **earned** its engineering cost |
+
 ---
 
 ## Table of contents
 
-1. [Why data pipelines need their own sequel](#why-data-pipelines-need-their-own-sequel)
-2. [The data pipeline promise — what you are actually selling](#the-data-pipeline-promise--what-you-are-actually-selling)
-3. [SLIs and SLOs for pipelines — pick the right promise](#slis-and-slos-for-pipelines--pick-the-right-promise)
-4. [Error budgets in practice — spending trust on purpose](#error-budgets-in-practice--spending-trust-on-purpose)
-5. [When to burn budget vs when to freeze changes](#when-to-burn-budget-vs-when-to-freeze-changes)
-6. [DORA for data teams — same ideas, different nouns](#dora-for-data-teams--same-ideas-different-nouns)
-7. [Deployment frequency — shipping pipeline change safely](#deployment-frequency--shipping-pipeline-change-safely)
-8. [Change failure rate — when a merge hurts consumers](#change-failure-rate--when-a-merge-hurts-consumers)
-9. [Lead time and MTTR — recovery in data land](#lead-time-and-mttr--recovery-in-data-land)
-10. [MTBF — pipelines that break every Tuesday](#mtbf--pipelines-that-break-every-tuesday)
-11. [Metrics dashboards data seniors actually watch](#metrics-dashboards-data-seniors-actually-watch)
-12. [Performance reviews — prove impact without ticket spam](#performance-reviews--prove-impact-without-ticket-spam)
-13. [A quarter plan template for pipeline owners](#a-quarter-plan-template-for-pipeline-owners)
-14. [Conclusion — the senior data engineer sentence](#conclusion--the-senior-data-engineer-sentence)
+1. [Terms defined — data pipeline dictionary](#terms-defined--data-pipeline-dictionary)
+2. [Why data pipelines need their own sequel](#why-data-pipelines-need-their-own-sequel)
+2. [Why data pipelines need their own sequel](#why-data-pipelines-need-their-own-sequel)
+3. [The data pipeline promise — what you are actually selling](#the-data-pipeline-promise--what-you-are-actually-selling)
+4. [SLIs and SLOs for pipelines — pick the right promise](#slis-and-slos-for-pipelines--pick-the-right-promise)
+5. [Error budgets in practice — spending trust on purpose](#error-budgets-in-practice--spending-trust-on-purpose)
+6. [When to burn budget vs when to freeze changes](#when-to-burn-budget-vs-when-to-freeze-changes)
+7. [DORA for data teams — same ideas, different nouns](#dora-for-data-teams--same-ideas-different-nouns)
+8. [Deployment frequency — shipping pipeline change safely](#deployment-frequency--shipping-pipeline-change-safely)
+9. [Change failure rate — when a merge hurts consumers](#change-failure-rate--when-a-merge-hurts-consumers)
+10. [Lead time and MTTR — recovery in data land](#lead-time-and-mttr--recovery-in-data-land)
+11. [MTBF — pipelines that break every Tuesday](#mtbf--pipelines-that-break-every-tuesday)
+12. [Metrics dashboards data seniors actually watch](#metrics-dashboards-data-seniors-actually-watch)
+13. [Performance reviews — prove impact without ticket spam](#performance-reviews--prove-impact-without-ticket-spam)
+14. [A quarter plan template for pipeline owners](#a-quarter-plan-template-for-pipeline-owners)
+15. [Conclusion — the senior data engineer sentence](#conclusion--the-senior-data-engineer-sentence)
 
 ---
 
@@ -81,7 +138,7 @@ Every pipeline makes an implicit promise. Seniors make it **explicit**.
 
 ### SLI — Service Level Indicator
 
-A **measurable signal** of pipeline health.
+**Defined:** A **measurable signal** of pipeline health — the specific number you track (e.g. “minutes late,” “% jobs failed”).
 
 Examples:
 
@@ -92,7 +149,7 @@ Examples:
 
 ### SLO — Service Level Objective
 
-An **internal target** for that SLI over a window (often 28 or 30 days).
+**Defined:** The **target** you commit to hit for that SLI over time (e.g. “on time 99% of days per month”).
 
 **Example (daily revenue mart):**
 

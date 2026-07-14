@@ -22,29 +22,105 @@
 
 **One line to remember:** Juniors optimize **tasks**. Seniors optimize **systems, outcomes, and risk over time**.
 
+> **New to the jargon?** Skip to **[Terms defined — the dictionary](#terms-defined--the-dictionary-read-this-first)** before the deep sections. Every acronym and fuzzy phrase used in this series gets a plain-English line there.
+
+---
+
+## Terms defined — the dictionary (read this first)
+
+Read this section once if you are **not** an SRE, or if meetings feel like acronym bingo. Each term gets **what it means** and **why you should care**.
+
+### Work and delivery (everyday engineering)
+
+| Term | Plain English | Why it matters |
+|------|---------------|----------------|
+| **Task / ticket** | A single piece of work (Jira, Linear, etc.) | Juniors are graded here; seniors are graded on **outcomes beyond one ticket**. |
+| **PR (pull request)** | Proposed code change others review before merge | “Shipped” often means **merged**, not **safe in production**. |
+| **Deploy** | Putting new code or config into **production** — the live environment customers use | Where failures become **real** and **measurable**. |
+| **Production (prod)** | The live system paying users depend on | Not staging, not your laptop. |
+| **Rollback** | Reverting to the last known-good version | Seniors treat this as a **feature**, not embarrassment. |
+| **Canary / holdout** | Release to a **small slice** of traffic first | Reduces **blast radius** if something breaks. |
+| **On-call** | Engineer responsible for incidents **right now** | Who gets paged when your metric turns red at 3 a.m. |
+| **Incident** | Unplanned problem hurting users or SLOs | Starts a clock: detect → fix → learn. |
+| **Dashboard** | Screen of charts (Grafana, Datadog, etc.) | Only useful if metrics tie to **decisions**. |
+| **Blast radius** | How much damage one failure can cause | Small deploys shrink it. |
+
+### Reliability promises (SLA family)
+
+| Term | Plain English | Why it matters |
+|------|---------------|----------------|
+| **SLI (Service Level Indicator)** | A **number you can measure** — e.g. “% of requests faster than 200 ms” | The **thermometer**. |
+| **SLO (Service Level Objective)** | An **internal target** for that number — e.g. “99.9% of requests meet the SLI monthly” | The **goal** engineering owns. |
+| **SLA (Service Level Agreement)** | A **customer-facing promise** in a contract, often with penalties | The **public promise** — usually looser than your SLO. |
+| **Availability / uptime** | % of time a service works as expected | “99.9%” sounds small until you calculate **minutes down per month**. |
+| **Latency** | **Delay** — how long a request or job takes | Users feel **tails** (slow requests), not averages. |
+| **p95 / p99 (percentile)** | “95% (or 99%) of requests were **at least this fast**” | Captures **worst-case-ish** experience better than the mean. |
+| **Error rate** | % of requests or jobs that **fail** | Signal, not shame — if defined honestly. |
+| **5xx / 4xx (HTTP codes)** | **5xx** = server broke; **4xx** = client/request issue (often different owner) | Split them or you chase the wrong team. |
+| **Error budget** | Allowed amount of **unreliability** before you miss your SLO | Lets you **trade** risk for speed **on purpose**. |
+
+### Recovery and stability over time
+
+| Term | Plain English | Why it matters |
+|------|---------------|----------------|
+| **MTTR (Mean Time to Recovery / Resolution)** | Average time from **“we know it’s broken”** to **“users are OK again”** | Measures **firefighting speed**. |
+| **MTBF (Mean Time Between Failures)** | Average time **between** failures | Measures **how often** pain repeats. |
+| **Postmortem** | Blameless write-up after an incident: what happened, what we fix | Turns drama into **process**. |
+
+### Software delivery (DORA)
+
+| Term | Plain English | Why it matters |
+|------|---------------|----------------|
+| **DORA** | Research group whose metrics describe **how well teams ship software** | Not a vanity contest — a **balance** of speed and safety. |
+| **Deployment frequency** | How **often** you successfully release to production | Smaller, frequent releases often reduce risk. |
+| **Lead time for changes** | Time from **code committed** to **running in prod** | Long lead time = big batches = scarier releases. |
+| **CFR (Change Failure Rate)** | % of releases that **cause failure** (rollback, hotfix, outage) | The **price** of moving fast without guardrails. |
+
+### Business and planning
+
+| Term | Plain English | Why it matters |
+|------|---------------|----------------|
+| **ROI (Return on Investment)** | **(Gain − cost) ÷ cost** — did the project pay off? | Seniors speak **money and time**, not only “cool tech.” |
+| **Resource utilization** | % of **CPU, memory, or people** actually in use | 100% sounds efficient; often means **no room for spikes**. |
+| **On-time delivery rate** | % of milestones hit by the **original** deadline | Gaming it with silent scope cuts destroys trust. |
+| **Sprint / milestone** | Fixed time box or checkpoint in project planning | Useful for planning; dangerous as a **pure grade**. |
+
+### Security and risk
+
+| Term | Plain English | Why it matters |
+|------|---------------|----------------|
+| **TTD (Time to Detect)** | Time from **breach or vuln exists** to **team knows** | Invisible problems grow damage every hour. |
+| **CVE** | Public catalog ID for a known **security vulnerability** | Triggers **patching** urgency. |
+| **Patching cadence** | How **regularly** you apply security fixes | Hygiene, not hero sprints once a year. |
+| **Vulnerability** | A weakness attackers could exploit | Exposure time is the enemy. |
+
+**How to use this dictionary:** When a section introduces a term, it will often say **“Defined above”** or give a one-line reminder. You do not need to memorize — **recognize** the word and know where to look.
+
 ---
 
 ## Table of contents
 
-1. [The promotion nobody announces: your scoreboard changes](#the-promotion-nobody-announces-your-scoreboard-changes)
-2. [Junior thinking vs senior thinking — the big picture](#junior-thinking-vs-senior-thinking--the-big-picture)
-3. [System stability & reliability — when “it works on my machine” stops being enough](#system-stability--reliability--when-it-works-on-my-machine-stops-being-enough)
-4. [SLA vs SLO — promise vs target](#sla-vs-slo--promise-vs-target)
-5. [Error rates — the signal, not the shame number](#error-rates--the-signal-not-the-shame-number)
-6. [MTTR — how fast you recover when reality wins](#mttr--how-fast-you-recover-when-reality-wins)
-7. [MTBF — how long calm lasts between storms](#mtbf--how-long-calm-lasts-between-storms)
-8. [Software delivery & performance — DORA without the vanity leaderboard](#software-delivery--performance--dora-without-the-vanity-leaderboard)
-9. [Deployment frequency — speed with guardrails](#deployment-frequency--speed-with-guardrails)
-10. [Change failure rate — the price of moving fast](#change-failure-rate--the-price-of-moving-fast)
-11. [Business value & efficiency — the conversation that enters the room](#business-value--efficiency--the-conversation-that-enters-the-room)
-12. [ROI — did the thing earn its keep?](#roi--did-the-thing-earn-its-keep)
-13. [Resource utilization — full is not always healthy](#resource-utilization--full-is-not-always-healthy)
-14. [On-time delivery rate — deadlines vs commitments](#on-time-delivery-rate--deadlines-vs-commitments)
-15. [Security & risk — clocks that never pause](#security--risk--clocks-that-never-pause)
-16. [Time to detect — the silent gap that hurts](#time-to-detect--the-silent-gap-that-hurts)
-17. [Patching cadence — hygiene as a habit, not a hero sprint](#patching-cadence--hygiene-as-a-habit-not-a-hero-sprint)
-18. [How the metrics fit together — one senior dashboard in your head](#how-the-metrics-fit-together--one-senior-dashboard-in-your-head)
-19. [Conclusion — what to optimize next quarter](#conclusion--what-to-optimize-next-quarter)
+1. [Terms defined — the dictionary](#terms-defined--the-dictionary-read-this-first)
+2. [The promotion nobody announces: your scoreboard changes](#the-promotion-nobody-announces-your-scoreboard-changes)
+2. [The promotion nobody announces: your scoreboard changes](#the-promotion-nobody-announces-your-scoreboard-changes)
+3. [Junior thinking vs senior thinking — the big picture](#junior-thinking-vs-senior-thinking--the-big-picture)
+4. [System stability & reliability — when “it works on my machine” stops being enough](#system-stability--reliability--when-it-works-on-my-machine-stops-being-enough)
+5. [SLA vs SLO — promise vs target](#sla-vs-slo--promise-vs-target)
+6. [Error rates — the signal, not the shame number](#error-rates--the-signal-not-the-shame-number)
+7. [MTTR — how fast you recover when reality wins](#mttr--how-fast-you-recover-when-reality-wins)
+8. [MTBF — how long calm lasts between storms](#mtbf--how-long-calm-lasts-between-storms)
+9. [Software delivery & performance — DORA without the vanity leaderboard](#software-delivery--performance--dora-without-the-vanity-leaderboard)
+10. [Deployment frequency — speed with guardrails](#deployment-frequency--speed-with-guardrails)
+11. [Change failure rate — the price of moving fast](#change-failure-rate--the-price-of-moving-fast)
+12. [Business value & efficiency — the conversation that enters the room](#business-value--efficiency--the-conversation-that-enters-the-room)
+13. [ROI — did the thing earn its keep?](#roi--did-the-thing-earn-its-keep)
+14. [Resource utilization — full is not always healthy](#resource-utilization--full-is-not-always-healthy)
+15. [On-time delivery rate — deadlines vs commitments](#on-time-delivery-rate--deadlines-vs-commitments)
+16. [Security & risk — clocks that never pause](#security--risk--clocks-that-never-pause)
+17. [Time to detect — the silent gap that hurts](#time-to-detect--the-silent-gap-that-hurts)
+18. [Patching cadence — hygiene as a habit, not a hero sprint](#patching-cadence--hygiene-as-a-habit-not-a-hero-sprint)
+19. [How the metrics fit together — one senior dashboard in your head](#how-the-metrics-fit-together--one-senior-dashboard-in-your-head)
+20. [Conclusion — what to optimize next quarter](#conclusion--what-to-optimize-next-quarter)
 
 ---
 
@@ -105,7 +181,9 @@ These two get swapped in meetings like `user_id` and `User Id`. They are related
 
 ### SLA — Service Level Agreement
 
-An **SLA** is a **contractual promise** to a customer (or internal customer). It usually includes:
+**Defined:** A **contractual promise** to a customer (or internal customer) about how reliable or fast a service will be — with consequences if you miss.
+
+An **SLA** usually includes:
 
 - what you measure (availability, latency, support response),
 - the threshold (e.g. 99.9% uptime per month),
@@ -115,7 +193,9 @@ An **SLA** is a **contractual promise** to a customer (or internal customer). It
 
 ### SLO — Service Level Objective
 
-An **SLO** is an **internal target** your team sets **before** you promise it externally. It should be **stricter** than the SLA — a buffer zone.
+**Defined:** An **internal target** your team sets — stricter than the SLA — so you have buffer before customers feel pain.
+
+An **SLO** should be **stricter** than the SLA — a buffer zone.
 
 **Example:**
 
@@ -133,6 +213,8 @@ An **SLO** is an **internal target** your team sets **before** you promise it ex
 | “Alerts fire = bad engineer.” | “Alerts are **feedback** — tune them to SLOs, not egos.” |
 
 ### Error budgets (the idea that connects SLA/SLO to daily work)
+
+**Defined:** The small amount of **allowed failure** (downtime, errors, slow requests) you can “spend” each month while still meeting your SLO — like a monthly allowance for things going wrong.
 
 If your SLO is 99.9% monthly, you have a small **error budget** — allowed unreliability before you breach the objective. Seniors ask:
 

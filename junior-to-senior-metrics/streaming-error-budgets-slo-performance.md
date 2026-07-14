@@ -26,27 +26,98 @@
 
 **Stacks referenced:** Kafka-style logs, Spark Structured Streaming, Flink — patterns apply to Kinesis, Pulsar, Redpanda, and managed stream processors too.
 
+> **New to the jargon?** Read **[Terms defined — streaming dictionary](#terms-defined--streaming-dictionary)** first. For SLO, error budget, MTTR, DORA, see [Part 1](https://github.com/chiheb08/medium-content/blob/main/junior-to-senior-metrics/junior-to-senior-thinking-metrics.md#terms-defined--the-dictionary-read-this-first). For batch pipelines, see [Part 2’s dictionary](https://github.com/chiheb08/medium-content/blob/main/junior-to-senior-metrics/data-pipelines-error-budgets-dora-performance.md#terms-defined--data-pipeline-dictionary).
+
+---
+
+## Terms defined — streaming dictionary
+
+### Streaming in one sentence
+
+**Streaming** = data is processed **continuously** as events arrive, instead of waiting for a nightly batch job to finish.
+
+### Core streaming concepts
+
+| Term | Plain English | Why it matters |
+|------|---------------|----------------|
+| **Event** | One **record** of something that happened (click, payment, sensor reading) | The atom of streaming — usually immutable once written. |
+| **Stream** | An **unending sequence** of events | The job never “completes” like a daily batch. |
+| **Broker / log** | System that **stores and forwards** events (Kafka, Pulsar, Kinesis) | Durable mailbox between producers and consumers. |
+| **Topic** | Named **channel** of events (like a TV channel for data) | Consumers subscribe to topics they care about. |
+| **Producer** | System that **writes** events into the stream | Upstream of your pipeline. |
+| **Consumer** | System that **reads** events and processes them | Your Flink/Spark job or microservice. |
+| **Consumer group** | Team of consumers **sharing** the work of reading a topic | Enables scale — each partition read by one worker in the group. |
+| **Partition** | **Shard** of a topic — events with same key go to same partition | Enables parallelism; **skew** happens when one partition is huge. |
+| **Offset** | **Bookmark** — “how far we have read” in the log | Resetting offset = **replay** or **skip** data — dangerous without a runbook. |
+
+### Time and correctness
+
+| Term | Plain English | Why it matters |
+|------|---------------|----------------|
+| **Event time** | When the thing **actually happened** in the real world | Correct for analytics when mobile/offline delay exists. |
+| **Processing time** | When **your pipeline processed** the event | Simpler but **misleading** under delay. |
+| **Watermark** | Engine’s estimate: “we are **unlikely** to see events older than T” | Used to **close windows** and emit results. |
+| **Window** | Grouping events by **time bucket** (e.g. “counts per 5 minutes”) | Aggregates need boundaries — windows define them. |
+| **Allowed lateness** | Policy: “still accept late events up to **N minutes**” | Trade-off between **completeness** and **speed**. |
+| **End-to-end latency** | Time from **event happens** → **visible downstream** | What fraud, ops, and product actually feel. |
+| **Consumer lag** | How **far behind** the consumer is vs newest event in the log | Famous metric — **not sufficient alone** for correctness. |
+
+### Delivery and failure words
+
+| Term | Plain English | Why it matters |
+|------|---------------|----------------|
+| **At-most-once** | Each event processed **0 or 1 times** — may **lose** data | Fast; risky for money metrics. |
+| **At-least-once** | No loss; **retries** may create **duplicates** | Common; needs **idempotent** sinks. |
+| **Exactly-once** | Each event affects downstream **once** (as defined) | Marketing-heavy — usually **end-to-end engineering**, not one config flag. |
+| **Idempotency** | Doing the same operation **twice** has same effect as once | e.g. upsert by `event_id` — prevents double-counting. |
+| **Checkpoint (Flink)** | **Snapshot** of job state for fault tolerance | Slow checkpoints → lag and instability. |
+| **Savepoint** | **Manual checkpoint** for controlled upgrade/rollback | Streaming “deploy” best friend. |
+| **Replay** | **Re-read** events from earlier offset | Fixes bugs; can **duplicate** if sink not idempotent. |
+| **Backpressure** | Downstream slow → upstream **slows or queues** | Warning sign before lag explodes. |
+| **Skew / hot key** | One key has **most** traffic — one worker overloaded | p99 latency dies while average looks fine. |
+
+### Schema and deploy
+
+| Term | Plain English | Why it matters |
+|------|---------------|----------------|
+| **Schema registry** | Central store for **event structure** (Avro, Protobuf) | Prevents “field disappeared” surprises. |
+| **Compatibility (BACKWARD/FORWARD)** | Rules for **safe** schema evolution | Breaking change = silent **CFR** event. |
+| **Sink** | Where results **go** (warehouse, DB, cache) | Often the real **latency** bottleneck. |
+| **Source** | Where events **come from** | Lag starts here. |
+
+### Metrics reminders (Part 1 & 2)
+
+| Term | Streaming twist |
+|------|-----------------|
+| **SLO** | Often on **lag** or **latency p99**, not “job green” |
+| **Error budget** | **Minutes per month** over lag threshold |
+| **MTTR** | Includes **replay, savepoint rollback, reconciliation** |
+| **MTBF** | “Breaks every sale day” = chronic design debt |
+| **CFR** | Bad deploy = wrong live aggregates, not only job crash |
+
 ---
 
 ## Table of contents
 
-1. [Why streaming needs Part 3 — the green dashboard trap](#why-streaming-needs-part-3--the-green-dashboard-trap)
-2. [Batch vs streaming promises — different scoreboards](#batch-vs-streaming-promises--different-scoreboards)
-3. [The streaming SLI menu — what to measure](#the-streaming-sli-menu--what-to-measure)
-4. [Consumer lag — the metric everyone cites (and misreads)](#consumer-lag--the-metric-everyone-cites-and-misreads)
-5. [End-to-end latency — when the event actually matters](#end-to-end-latency--when-the-event-actually-matters)
-6. [Event time, processing time, and watermarks](#event-time-processing-time-and-watermarks)
-7. [Completeness and correctness under delay](#completeness-and-correctness-under-delay)
-8. [Delivery semantics — what you can actually promise](#delivery-semantics--what-you-can-actually-promise)
-9. [Error budgets for always-on pipelines](#error-budgets-for-always-on-pipelines)
-10. [DORA when deploy means savepoint](#dora-when-deploy-means-savepoint)
-11. [MTTR and MTBF in stream land](#mttr-and-mtbf-in-stream-land)
-12. [Backpressure, skew, and utilization](#backpressure-skew-and-utilization)
-13. [Schema change and compatibility — silent CFR multipliers](#schema-change-and-compatibility--silent-cfr-multipliers)
-14. [The senior streaming dashboard](#the-senior-streaming-dashboard)
-15. [Performance reviews for streaming engineers](#performance-reviews-for-streaming-engineers)
-16. [Quarter plan — streaming edition](#quarter-plan--streaming-edition)
-17. [Conclusion — the senior streaming sentence](#conclusion--the-senior-streaming-sentence)
+1. [Terms defined — streaming dictionary](#terms-defined--streaming-dictionary)
+2. [Why streaming needs Part 3 — the green dashboard trap](#why-streaming-needs-part-3--the-green-dashboard-trap)
+2. [Why streaming needs Part 3 — the green dashboard trap](#why-streaming-needs-part-3--the-green-dashboard-trap)
+3. [Batch vs streaming promises — different scoreboards](#batch-vs-streaming-promises--different-scoreboards)
+4. [The streaming SLI menu — what to measure](#the-streaming-sli-menu--what-to-measure)
+5. [Consumer lag — the metric everyone cites (and misreads)](#consumer-lag--the-metric-everyone-cites-and-misreads)
+6. [End-to-end latency — when the event actually matters](#end-to-end-latency--when-the-event-actually-matters)
+7. [Event time, processing time, and watermarks](#event-time-processing-time-and-watermarks)
+8. [Completeness and correctness under delay](#completeness-and-correctness-under-delay)
+9. [Delivery semantics — what you can actually promise](#delivery-semantics--what-you-can-actually-promise)
+10. [Error budgets for always-on pipelines](#error-budgets-for-always-on-pipelines)
+11. [DORA when deploy means savepoint](#dora-when-deploy-means-savepoint)
+12. [MTTR and MTBF in stream land](#mttr-and-mtbf-in-stream-land)
+13. [Backpressure, skew, and utilization](#backpressure-skew-and-utilization)
+14. [Schema change and compatibility — silent CFR multipliers](#schema-change-and-compatibility--silent-cfr-multipliers)
+15. [The senior streaming dashboard](#the-senior-streaming-dashboard)
+16. [Performance reviews for streaming engineers](#performance-reviews-for-streaming-engineers)
+17. [Quarter plan — streaming edition](#quarter-plan--streaming-edition)
+18. [Conclusion — the senior streaming sentence](#conclusion--the-senior-streaming-sentence)
 
 ---
 
@@ -102,7 +173,9 @@ Pick **one primary SLI per consumer-facing stream** — not twelve graphs nobody
 
 ## Consumer lag — the metric everyone cites (and misreads)
 
-**Consumer lag** = how far a consumer group is behind the **end of the log** (Kafka: `records-lag-max`; Flink: checkpoint alignment + source lag metrics).
+**Consumer lag** = how far a consumer group is behind the **end of the log** (Kafka: `records-lag-max`; Flink: source lag + checkpoint health).
+
+**Defined in plain English:** Imagine a **conveyor belt** of events. Lag is “how many packages are still **in front of you** before you are caught up to the newest one.” Low lag = you are keeping pace **right now**.
 
 ### What lag actually means
 
