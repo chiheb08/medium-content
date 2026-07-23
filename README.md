@@ -17,3 +17,6 @@ This repository is for my Medium blogs — here I share the content I publish on
 - **backoff-strategies-data-engineering/** — Retry and backoff strategies for modern data pipelines (APIs, warehouses, Kafka, Airflow).
   - `backoff-strategies-for-data-engineering.md` — Full article with tables.
   - `backoff-strategies-for-data-engineering-medium-no-tables.md` — Medium paste version (empty slots for table screenshots).
+- **nlp-to-modern-ai-stack/** — From NLP history to transformers, RAG, LangChain, LangGraph, and MCP.
+  - `from-eliza-to-mcp-complete-nlp-ai-stack.md` — Full article with tables.
+  - `from-eliza-to-mcp-complete-nlp-ai-stack-medium-no-tables.md` — Medium paste version (empty slots for table screenshots).
